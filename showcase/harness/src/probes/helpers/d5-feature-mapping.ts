@@ -54,15 +54,19 @@ const REGISTRY_TO_D5: Readonly<Record<string, readonly D5FeatureType[]>> = {
   // agentic-chat (1:1)
   "agentic-chat": ["agentic-chat"],
 
-  // tool-rendering — every variant exercises the per-tool render pipeline.
+  // tool-rendering — split per renderer contract. Each variant exercises
+  // a different testid surface so they need their own probe scripts:
+  //   - `tool-rendering`                   : per-tool renderer (WeatherCard).
+  //   - `tool-rendering-default-catchall`  : built-in default catchall renderer.
+  //   - `tool-rendering-custom-catchall`   : custom wildcard (`*`) renderer.
   // `tool-rendering-reasoning-chain` is intentionally NOT mapped here:
   // the D5 tool-rendering probe sends "weather in Tokyo" and asserts a
   // WeatherCard, which is the wrong test for the reasoning-chain demo.
   // Reasoning-chain pages need their own D5 probe script; until one
   // exists the demo ID is silently skipped by `demosToFeatureTypes`.
   "tool-rendering": ["tool-rendering"],
-  "tool-rendering-default-catchall": ["tool-rendering"],
-  "tool-rendering-custom-catchall": ["tool-rendering"],
+  "tool-rendering-default-catchall": ["tool-rendering-default-catchall"],
+  "tool-rendering-custom-catchall": ["tool-rendering-custom-catchall"],
 
   // gen-ui (headless tier) — `headless-simple` and `headless-complete`
   // each have their own D5 script and fixture. They live on different
@@ -103,8 +107,12 @@ const REGISTRY_TO_D5: Readonly<Record<string, readonly D5FeatureType[]>> = {
   // preNavigateRoute split).
   "shared-state-read-write": ["shared-state-read", "shared-state-write"],
 
-  // mcp-apps + subagents (registry has both feature IDs; D5 script
-  // covers both featureTypes via one /demos/subagents conversation).
+  // mcp-apps + subagents — Phase-2A split: each registry feature ID
+  // points at its own D5 probe (was previously a shared `d5-mcp-subagents`
+  // probe that drove `/demos/subagents` for both, leaving `mcp-apps`
+  // wrong-targeted). `d5-mcp-apps.ts` drives `/demos/mcp-apps` and
+  // asserts the iframe shell; `d5-subagents.ts` drives `/demos/subagents`
+  // and asserts the 3 subagent-card testids.
   "mcp-apps": ["mcp-apps"],
   subagents: ["subagents"],
 
@@ -161,12 +169,15 @@ const REGISTRY_TO_D5: Readonly<Record<string, readonly D5FeatureType[]>> = {
   "shared-state-read": ["shared-state-read"],
 
   // Generative-UI family — split per protocol shape (declarative spec,
-  // A2UI fixed schema, open LLM-shape, agent-emitted UI). Open-tier
-  // collapses simple + advanced into one literal.
+  // A2UI fixed schema, open LLM-shape, agent-emitted UI). Open-tier is
+  // split into a basic literal and an advanced literal because the
+  // advanced demo embeds an iframe-rendered sandbox that the basic demo
+  // does not — the advanced probe asserts iframe presence as its
+  // distinguishing signal.
   "declarative-gen-ui": ["gen-ui-declarative"],
   "a2ui-fixed-schema": ["gen-ui-a2ui-fixed"],
   "open-gen-ui": ["gen-ui-open"],
-  "open-gen-ui-advanced": ["gen-ui-open"],
+  "open-gen-ui-advanced": ["gen-ui-open-advanced"],
   "gen-ui-agent": ["gen-ui-agent"],
 
   // Interrupt family — LangGraph interrupt-driven HITL, distinct from
