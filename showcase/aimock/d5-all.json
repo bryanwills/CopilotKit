@@ -699,6 +699,22 @@
       "response": {
         "content": "Theme toggled."
       }
+    },
+    {
+      "match": {
+        "userMessage": "What do you know about me from my context?"
+      },
+      "response": {
+        "content": "I see you're Atai, and you're in the America/Los_Angeles timezone. Recently, you viewed the pricing page and watched the product demo video. How can I assist you today?"
+      }
+    },
+    {
+      "match": {
+        "userMessage": "Based on my recent activity, what should I try next?"
+      },
+      "response": {
+        "content": "Since you recently viewed the pricing page and watched the product demo video, it might be a good idea to explore user testimonials or case studies to see how others have benefited from the Pro Plan. You could also start the 14-day free trial to experience the features firsthand."
+      }
     }
   ]
 }
