@@ -64,42 +64,29 @@ export const FRONTEND_TOOL_PILLS = [
 
 /** Per-pill keyword families. The agent's gradient string is free-form
  *  CSS, but a real LLM (and our fixtures) consistently mention at least
- *  ONE color from each family. Matching against ANY token in the family
- *  is robust to wording drift while still catching a regression that
- *  returns the same gradient for every pill. Hex prefixes cover both
- *  named colors and inline hex. */
+ *  ONE color name from each family. Matching against ANY token in the
+ *  family is robust to wording drift while still catching a regression
+ *  that returns the same gradient for every pill.
+ *
+ *  IMPORTANT: keep these to color-name keywords ONLY (no naked hex
+ *  prefixes like `"#0"` or `"#ff"`). Naked hex prefixes accidentally
+ *  cross-match across families (e.g. cosmic's `#1e3a8a` matches a
+ *  hypothetical forest prefix `"#1"`), letting a regression that
+ *  returns the same gradient for every pill silently pass. If a hex
+ *  signal is ever required, use a FULL 6-digit code drawn from the
+ *  actual fixture rather than a 1-2 character prefix. */
 export const PILL_GRADIENT_HINTS: Record<string, readonly string[]> = {
-  sunset: [
-    "orange",
-    "red",
-    "rose",
-    "pink",
-    "amber",
-    "coral",
-    "sunset",
-    "#ff",
-    "#f9",
-    "#fb",
-    "#fc",
-    "#fd",
-    "#fe",
-  ],
-  forest: ["green", "emerald", "lime", "olive", "teal", "forest", "#0", "#1", "#2"],
+  sunset: ["sunset", "orange", "red", "rose", "pink", "amber", "coral", "peach"],
+  forest: ["forest", "green", "emerald", "lime", "olive", "teal"],
   cosmic: [
+    "cosmic",
+    "space",
     "navy",
     "magenta",
     "purple",
     "violet",
     "indigo",
     "fuchsia",
-    "cosmic",
-    "#3",
-    "#4",
-    "#5",
-    "#6",
-    "#7",
-    "#8",
-    "#9",
   ],
 } as const;
 
