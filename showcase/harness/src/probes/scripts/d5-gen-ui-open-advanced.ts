@@ -10,9 +10,23 @@
  * its distinguishing signal.
  *
  * Selector cascade (most-specific first):
- *   1. `[data-testid="gen-ui-open-advanced-iframe"]` — canonical testid
- *                                                      (Phase-1C adds this).
- *   2. `iframe`                                      — generic fallback.
+ *   1. `[data-testid="gen-ui-open-advanced-iframe"]`     — canonical testid
+ *                                                          (Phase-1C adds this).
+ *   2. `iframe[sandbox*="allow-scripts"]`                — sandbox-attribute
+ *                                                          fallback. The
+ *                                                          advanced demo
+ *                                                          renders the user
+ *                                                          payload inside a
+ *                                                          sandboxed iframe
+ *                                                          with at minimum
+ *                                                          `allow-scripts` so
+ *                                                          this matches the
+ *                                                          spec. A bare
+ *                                                          `iframe` fallback
+ *                                                          would over-match
+ *                                                          (e.g. third-party
+ *                                                          analytics frames
+ *                                                          on the host page).
  *
  * Side effect: importing this module triggers `registerD5Script`. The
  * default loader in `e2e-deep.ts` discovers it via the `d5-*` filename
@@ -27,7 +41,7 @@ import type { ConversationTurn, Page } from "../helpers/conversation-runner.js";
 
 export const ADVANCED_IFRAME_SELECTORS = [
   '[data-testid="gen-ui-open-advanced-iframe"]',
-  "iframe",
+  'iframe[sandbox*="allow-scripts"]',
 ] as const;
 
 const IFRAME_POLL_TIMEOUT_MS = 15_000;
@@ -48,7 +62,7 @@ export async function probeAdvancedIframe(page: Page): Promise<string | null> {
     };
     const selectors = [
       '[data-testid="gen-ui-open-advanced-iframe"]',
-      "iframe",
+      'iframe[sandbox*="allow-scripts"]',
     ];
     for (const sel of selectors) {
       if (win.document.querySelector(sel)) return sel;
@@ -85,17 +99,24 @@ export async function assertAdvancedIframe(
 }
 
 /**
- * Build the conversation turns. We send a single "advanced" prompt to
- * trigger any chat-driven rendering the demo composes, then assert the
- * iframe is present. The iframe is the demo's load-bearing surface
- * regardless of chat round-trip outcome — this turn pinpoints "the
- * advanced sandbox didn't mount" failures from "the chat regressed"
- * failures.
+ * Build the conversation turns. We send a verbatim suggestion-pill
+ * prompt from `open-gen-ui-advanced/suggestions.ts` ("Inline expression
+ * evaluator") which is keyed in `showcase/aimock/d5-all.json` to a
+ * deterministic `generateSandboxedUi` tool call. That tool call is
+ * what causes the advanced demo to mount a sandboxed iframe with
+ * `srcdoc` set to a small HTML+CSS payload; without a fixture-keyed
+ * prompt the agent would either skip the tool call entirely or fall
+ * through to a content-only catch-all, leaving the iframe assertion
+ * red on a stable demo.
+ *
+ * The iframe is the demo's load-bearing surface regardless of chat
+ * round-trip outcome — this turn pinpoints "the advanced sandbox
+ * didn't mount" failures from "the chat regressed" failures.
  */
 export function buildTurns(_ctx: D5BuildContext): ConversationTurn[] {
   return [
     {
-      input: "render the advanced gen-ui sandbox",
+      input: "Inline expression evaluator",
       assertions: assertAdvancedIframe,
     },
   ];
