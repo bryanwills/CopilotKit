@@ -699,6 +699,160 @@
       "response": {
         "content": "Theme toggled."
       }
+    },
+    {
+      "_comment": "hitl-in-app — refund pill (#12345). 1st turn: emit request_user_approval tool call.",
+      "match": {
+        "userMessage": "$50 refund to Jordan Rivera on ticket #12345",
+        "hasToolResult": false
+      },
+      "response": {
+        "toolCalls": [
+          {
+            "id": "call_d5_hitl_refund_12345_001",
+            "name": "request_user_approval",
+            "arguments": "{\"message\":\"Issue a $50 refund to Jordan Rivera on ticket #12345 for the duplicate charge.\",\"context\":\"Ticket #12345 — duplicate-charge goodwill credit.\"}"
+          }
+        ]
+      }
+    },
+    {
+      "_comment": "hitl-in-app — refund pill (#12345), 2nd turn after approve. sequenceIndex 0 = approve branch (first match).",
+      "match": {
+        "userMessage": "$50 refund to Jordan Rivera on ticket #12345",
+        "hasToolResult": true,
+        "sequenceIndex": 0
+      },
+      "response": {
+        "content": "I am processing the $50 refund to Jordan Rivera on ticket #12345 now."
+      }
+    },
+    {
+      "_comment": "hitl-in-app — refund pill (#12345), 2nd turn after reject. sequenceIndex 1 = reject branch (second match).",
+      "match": {
+        "userMessage": "$50 refund to Jordan Rivera on ticket #12345",
+        "hasToolResult": true,
+        "sequenceIndex": 1
+      },
+      "response": {
+        "content": "Understood — the refund request was not approved. I will not issue the $50 refund on ticket #12345."
+      }
+    },
+    {
+      "_comment": "hitl-in-app — escalate pill (#12347). 1st turn: emit request_user_approval tool call.",
+      "match": {
+        "userMessage": "escalate ticket #12347 to the payments team",
+        "hasToolResult": false
+      },
+      "response": {
+        "toolCalls": [
+          {
+            "id": "call_d5_hitl_escalate_12347_001",
+            "name": "request_user_approval",
+            "arguments": "{\"message\":\"Escalate ticket #12347 to the payments team for Morgan Lee's stuck payment.\",\"context\":\"Ticket #12347 — payment stuck, needs payments-team triage.\"}"
+          }
+        ]
+      }
+    },
+    {
+      "_comment": "hitl-in-app — escalate pill (#12347), 2nd turn after approve. sequenceIndex 0 = approve branch.",
+      "match": {
+        "userMessage": "escalate ticket #12347 to the payments team",
+        "hasToolResult": true,
+        "sequenceIndex": 0
+      },
+      "response": {
+        "content": "Escalated ticket #12347 to the payments team for Morgan Lee — they will pick this up shortly."
+      }
+    },
+    {
+      "_comment": "hitl-in-app — escalate pill (#12347), 2nd turn after reject. sequenceIndex 1 = reject branch.",
+      "match": {
+        "userMessage": "escalate ticket #12347 to the payments team",
+        "hasToolResult": true,
+        "sequenceIndex": 1
+      },
+      "response": {
+        "content": "Not escalated — ticket #12347 will stay with the current owner per your decision."
+      }
+    },
+    {
+      "_comment": "frontend-tools-async — project-planning pill. 1st turn: query_notes tool call. Specific match wins over the broad 'plan' fixture in feature-parity.json (d5-all.json loads first).",
+      "match": {
+        "userMessage": "Find my notes about project planning",
+        "hasToolResult": false
+      },
+      "response": {
+        "toolCalls": [
+          {
+            "id": "call_d5_query_notes_project_planning_001",
+            "name": "query_notes",
+            "arguments": "{\"keyword\":\"project planning\"}"
+          }
+        ]
+      }
+    },
+    {
+      "_comment": "frontend-tools-async — project-planning pill. 2nd turn: narration referencing the project-planning notes returned by the async handler.",
+      "match": {
+        "userMessage": "Find my notes about project planning",
+        "hasToolResult": true
+      },
+      "response": {
+        "content": "You have notes on project planning: \"Q2 project planning kickoff\" and \"Project planning retrospective notes\". Let me know if you want a summary of either."
+      }
+    },
+    {
+      "_comment": "frontend-tools-async — auth pill. 1st turn: query_notes tool call. Beats the showcase-assistant catch-all in feature-parity.json by virtue of d5-all.json's load order and a longer specific substring match.",
+      "match": {
+        "userMessage": "Search my notes for anything related to auth",
+        "hasToolResult": false
+      },
+      "response": {
+        "toolCalls": [
+          {
+            "id": "call_d5_query_notes_auth_001",
+            "name": "query_notes",
+            "arguments": "{\"keyword\":\"auth\"}"
+          }
+        ]
+      }
+    },
+    {
+      "_comment": "frontend-tools-async — auth pill. 2nd turn: narration referencing the auth note returned by the async handler.",
+      "match": {
+        "userMessage": "Search my notes for anything related to auth",
+        "hasToolResult": true
+      },
+      "response": {
+        "content": "You have one note related to auth: \"Planning: migrate auth to passkeys\" — it covers WebAuthn library options and a fallback for unsupported browsers."
+      }
+    },
+    {
+      "_comment": "frontend-tools-async — reading pill. 1st turn: query_notes tool call.",
+      "match": {
+        "userMessage": "Do I have any notes tagged reading",
+        "hasToolResult": false
+      },
+      "response": {
+        "toolCalls": [
+          {
+            "id": "call_d5_query_notes_reading_001",
+            "name": "query_notes",
+            "arguments": "{\"keyword\":\"reading\"}"
+          }
+        ]
+      }
+    },
+    {
+      "_comment": "frontend-tools-async — reading pill. 2nd turn: locked narration leading phrase per spec test #4 assertion.",
+      "match": {
+        "userMessage": "Do I have any notes tagged reading",
+        "hasToolResult": true
+      },
+      "response": {
+        "content": "You have a note titled \"Book recommendations\" that is tagged with \"reading.\" It includes the following books: Thinking Fast and Slow by Daniel Kahneman, The Design of Everyday Things by Don Norman."
+      }
     }
   ]
 }
