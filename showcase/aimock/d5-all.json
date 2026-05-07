@@ -2,6 +2,83 @@
   "_comment": "Bundled D5 (e2e-deep) fixtures. Source files: showcase/harness/fixtures/d5/*.json (auto-merged). Uses hasToolResult matching for multi-turn disambiguation. Loaded by aimock before feature-parity.json for match precedence. The first 7 entries below are the open-gen-ui (4) and open-gen-ui-advanced (3) pill fixtures — they emit deterministic generateSandboxedUi tool calls and intentionally appear before everything else so they win first-match-wins ordering against the showcase-assistant 'hi' catch-all in feature-parity.json. Verbatim pill messages are owned by langgraph-python/src/app/demos/open-gen-ui/suggestions.ts and open-gen-ui-advanced/suggestions.ts. Source-of-truth: showcase/harness/fixtures/d5/gen-ui-open.json.",
   "fixtures": [
     {
+      "_comment": "headless-simple pill 1: locks the deterministic greeting leading phrase.",
+      "match": {
+        "userMessage": "Say hello in one short sentence"
+      },
+      "response": {
+        "content": "Hello! I can help you with weather lookups, creating pie and bar charts, scheduling meetings, looking up flights, and toggling the theme. What would you like to try?"
+      }
+    },
+    {
+      "_comment": "headless-simple pill 2: locks the deterministic joke.",
+      "match": {
+        "userMessage": "Tell me a one-line joke"
+      },
+      "response": {
+        "content": "Why did the scarecrow win an award? Because he was outstanding in his field!"
+      }
+    },
+    {
+      "_comment": "headless-simple pill 3: locks the deterministic fun fact.",
+      "match": {
+        "userMessage": "Give me a fun fact"
+      },
+      "response": {
+        "content": "A fun fact: Honey never spoils! Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible."
+      }
+    },
+    {
+      "_comment": "headless-complete highlight pill: high-priority verbatim match. Without this, the showcase-assistant catch-all in feature-parity.json wins. Two-turn fixture: turn 1 emits the highlight_note tool call so the headless useComponent registration paints a Highlight card; turn 2 (after the tool result) emits the deterministic narration.",
+      "match": {
+        "userMessage": "Highlight: ship the demo on Friday",
+        "hasToolResult": false
+      },
+      "response": {
+        "toolCalls": [
+          {
+            "id": "call_d5_headless_highlight_001",
+            "name": "highlight_note",
+            "arguments": "{\"text\":\"ship the demo on Friday\",\"color\":\"yellow\"}"
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "Highlight: ship the demo on Friday",
+        "hasToolResult": true
+      },
+      "response": {
+        "content": "Highlighted 'ship the demo on Friday' for you above."
+      }
+    },
+    {
+      "_comment": "headless-complete revenue chart pill: locks the deterministic chart leading phrase. Two-turn fixture: turn 1 emits the get_revenue_chart tool call (no parameters per the python tool); turn 2 emits the narration that the headless message-assistant bubble renders alongside the ChartCard.",
+      "match": {
+        "userMessage": "chart of revenue over the last six months",
+        "hasToolResult": false
+      },
+      "response": {
+        "toolCalls": [
+          {
+            "id": "call_d5_headless_revenue_chart_001",
+            "name": "get_revenue_chart",
+            "arguments": "{}"
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "chart of revenue over the last six months",
+        "hasToolResult": true
+      },
+      "response": {
+        "content": "Here is the chart of revenue over the last six months — quarterly revenue grew steadily, peaking in June."
+      }
+    },
+    {
       "_comment": "tool-rendering pill: Chain tools — emit 3 tool calls in one assistant turn (get_weather Tokyo + search_flights SFO->Tokyo + roll_d20=11). MUST appear before the bare 'weather in Tokyo' fixture below; substring match would otherwise leak into this prompt.",
       "match": {
         "userMessage": "Chain a few tools in this single turn",
