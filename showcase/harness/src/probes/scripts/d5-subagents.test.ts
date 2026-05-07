@@ -144,7 +144,21 @@ describe("D5 subagents assertSubagentsChain", () => {
     };
   }
 
-  it("passes when the snapshot satisfies all checks", async () => {
+  function makePageReturningSequence(snaps: unknown[]): Page {
+    let i = 0;
+    return {
+      waitForSelector: async () => undefined,
+      fill: async () => undefined,
+      press: async () => undefined,
+      evaluate: async <R>(_fn: () => R): Promise<R> => {
+        const snap = snaps[Math.min(i, snaps.length - 1)];
+        i++;
+        return snap as R;
+      },
+    };
+  }
+
+  it("passes when the snapshot satisfies all checks (and re-snapshot is also valid)", async () => {
     const mod = await import("./d5-subagents.js");
     const page = makePageReturning({
       counts: {
@@ -154,7 +168,12 @@ describe("D5 subagents assertSubagentsChain", () => {
       },
       text: "real reply with substance",
     });
-    await expect(mod.assertSubagentsChain(page, 50)).resolves.toBeUndefined();
+    // dwellMs=0 keeps the post-pass re-snapshot fast — we still hit
+    // both `evaluate` calls because the same stable snapshot is
+    // returned twice.
+    await expect(
+      mod.assertSubagentsChain(page, 50, 0),
+    ).resolves.toBeUndefined();
   });
 
   it("throws with the validation error when the snapshot fails", async () => {
@@ -167,9 +186,50 @@ describe("D5 subagents assertSubagentsChain", () => {
       },
       text: "",
     });
-    await expect(mod.assertSubagentsChain(page, 30)).rejects.toThrow(
+    await expect(mod.assertSubagentsChain(page, 30, 0)).rejects.toThrow(
       /subagent-card-researcher/,
     );
+  });
+
+  it("fails when the chain destabilises during the dwell window (critic loop appears post-pass)", async () => {
+    // First snapshot passes (1 critic), second snapshot has 2 critics
+    // — exactly the regression the dwell-and-recheck guards against.
+    const mod = await import("./d5-subagents.js");
+    const page = makePageReturningSequence([
+      {
+        counts: {
+          "subagent-card-researcher": 1,
+          "subagent-card-writer": 1,
+          "subagent-card-critic": 1,
+        },
+        text: "real reply with substance",
+      },
+      {
+        counts: {
+          "subagent-card-researcher": 1,
+          "subagent-card-writer": 1,
+          "subagent-card-critic": 2,
+        },
+        text: "real reply with substance",
+      },
+    ]);
+    await expect(
+      mod.assertSubagentsChain(page, 50, 5),
+    ).rejects.toThrow(/destabilised during/);
+  });
+
+  it("flags the empty-sub-agent sentinel as boilerplate", async () => {
+    const mod = await import("./d5-subagents.js");
+    const result = mod.validateSubagentsSnapshot({
+      counts: {
+        "subagent-card-researcher": 1,
+        "subagent-card-writer": 1,
+        "subagent-card-critic": 1,
+      },
+      // Lower-cased to match the probe's `text.toLowerCase()` snapshot.
+      text: "researcher: <sub-agent produced no output>",
+    });
+    expect(result).toMatch(/boilerplate marker/);
   });
 });
 

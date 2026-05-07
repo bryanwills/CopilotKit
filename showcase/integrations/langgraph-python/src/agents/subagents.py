@@ -105,6 +105,13 @@ _critique_agent = create_agent(
 # @endregion[subagent-setup]
 
 
+# Sentinel surfaced when a sub-agent run produces no usable text. Kept
+# as a module-level constant so the harness probe (and any UI fallback)
+# can match the exact phrase. The leading/trailing angle brackets keep
+# it out of plausible LLM phrasing.
+SUB_AGENT_EMPTY_SENTINEL = "<sub-agent produced no output>"
+
+
 def _invoke_sub_agent(agent, task: str) -> str:
     """Run a sub-agent on `task` and return its final prose message.
 
@@ -139,10 +146,13 @@ def _invoke_sub_agent(agent, task: str) -> str:
                 joined = "".join(parts).strip()
                 if joined:
                     return joined
-    # Last-resort fallback: stringify the final message content if any.
-    if messages:
-        return str(messages[-1].content)
-    return ""
+    # Last-resort fallback: surface an explicit sentinel rather than ""
+    # or a Python repr like "[{'type': 'text', ...}]" leaking from a
+    # block-list `content`. The d5-subagents probe asserts this exact
+    # sentinel against its boilerplate-marker list so an empty/garbled
+    # sub-agent result fails the genuine-pass test instead of silently
+    # rendering an empty card.
+    return SUB_AGENT_EMPTY_SENTINEL
 
 
 def _delegation_update(
