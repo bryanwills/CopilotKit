@@ -1,11 +1,11 @@
 /**
  * D5 — gen-ui-open script.
  *
- * Covers `/demos/open-gen-ui` and `/demos/open-gen-ui-advanced` via
- * preNavigateRoute. Two turns — first asserts the basic open-shape
- * render, second asserts the advanced flow continues correctly. The
- * `hasToolResult`-style disambiguation isn't needed because each turn's
- * userMessage substring is unique.
+ * Covers `/demos/open-gen-ui` ONLY. Phase-2A split moved
+ * `open-gen-ui-advanced` onto its own probe (`d5-gen-ui-open-advanced.ts`)
+ * because the advanced demo's distinguishing signal is iframe presence,
+ * which the basic open-shape assertion does not exercise. The two
+ * routes are now decoupled and each owns a focused signal.
  */
 
 import {
@@ -85,16 +85,13 @@ export function buildTurns(_ctx: D5BuildContext): ConversationTurn[] {
   ];
 }
 
-/** Default to /demos/open-gen-ui-advanced when both demos are declared
- *  (the advanced route covers the basic flow as turn 1). Fallback to
- *  /demos/open-gen-ui when the advanced demo isn't declared. */
+/** Always route to /demos/open-gen-ui. The advanced variant moved to
+ *  `d5-gen-ui-open-advanced.ts` in Phase-2A; this probe is now scoped
+ *  to the basic route only. */
 export function preNavigateRoute(
   _ft: D5FeatureType,
-  ctx?: D5RouteContext,
+  _ctx?: D5RouteContext,
 ): string {
-  if (ctx?.demos && ctx.demos.includes("open-gen-ui-advanced")) {
-    return "/demos/open-gen-ui-advanced";
-  }
   return "/demos/open-gen-ui";
 }
 

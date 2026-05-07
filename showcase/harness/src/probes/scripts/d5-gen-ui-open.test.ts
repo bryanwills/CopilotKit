@@ -26,15 +26,15 @@ describe("d5-gen-ui-open script", () => {
     expect(turns[1]!.input).toBe("continue the advanced gen-ui flow");
   });
 
-  it("preNavigateRoute prefers /demos/open-gen-ui-advanced when available", () => {
+  it("preNavigateRoute always returns /demos/open-gen-ui (advanced moved to its own probe)", () => {
+    // Phase-2A split: this probe is scoped to the basic route only.
+    // Demos containing `open-gen-ui-advanced` are routed to the
+    // dedicated `d5-gen-ui-open-advanced.ts` probe, NOT this one.
     expect(
       preNavigateRoute("gen-ui-open", {
         demos: ["open-gen-ui", "open-gen-ui-advanced"],
       }),
-    ).toBe("/demos/open-gen-ui-advanced");
-  });
-
-  it("preNavigateRoute falls back to /demos/open-gen-ui without advanced demo", () => {
+    ).toBe("/demos/open-gen-ui");
     expect(preNavigateRoute("gen-ui-open", { demos: ["open-gen-ui"] })).toBe(
       "/demos/open-gen-ui",
     );
