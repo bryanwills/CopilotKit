@@ -139,10 +139,6 @@ describe("D5 tool-rendering-default-catchall — exported constants", () => {
     const mod = await import("./d5-tool-rendering-default-catchall.js");
     expect(mod.EXPECTED_TOOL_NAME).toBe("get_weather");
     expect(mod.CATCHALL_CONTAINER_TESTID).toBe("copilot-tool-render");
-    expect([...mod.STATUS_PILL_TESTIDS]).toEqual([
-      "tool-status-pending",
-      "tool-status-executing",
-      "tool-status-complete",
-    ]);
+    expect(mod.STATUS_PILL_TESTID).toBe("copilot-tool-render-status");
   });
 });
