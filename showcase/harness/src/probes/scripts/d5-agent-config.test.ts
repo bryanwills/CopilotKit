@@ -6,6 +6,7 @@ import {
   buildKnobDiffAssertion,
   AGENT_CONFIG_PROBES,
   RESPONSE_LENGTH_DELTA_MIN,
+  type KnobSnapshot,
 } from "./d5-agent-config.js";
 
 function makePage(transcript: string): Page {
@@ -16,6 +17,20 @@ function makePage(transcript: string): Page {
     async evaluate<R>() {
       return transcript as unknown as R;
     },
+  };
+}
+
+/** Construct a KnobSnapshot whose `aOnly` is the supplied A-delta and
+ *  whose `postACumulative` is the priorCumulative + aOnly — matching
+ *  what the snapshot assertion would have populated had it run. */
+function snapshotFor(
+  priorCumulative: string,
+  aOnly: string,
+): KnobSnapshot {
+  return {
+    priorCumulative,
+    postACumulative: `${priorCumulative} ${aOnly}`.trim(),
+    aOnly,
   };
 }
 
@@ -50,52 +65,65 @@ describe("d5-agent-config script", () => {
   });
 
   it("text-diff assertion succeeds when A and B responses differ", async () => {
-    const snapshotA = { text: "Greetings. Professional tone." };
-    const assertion = buildKnobDiffAssertion("tone", "text", snapshotA);
-    // Simulate concatenated transcript A + B.
-    const page = makePage(
-      "Greetings. Professional tone. Hey! Casual mode here.",
-    );
+    const snap = snapshotFor("", "Greetings. Professional tone.");
+    const assertion = buildKnobDiffAssertion("tone", "text", snap);
+    // Cumulative transcript at value-B turn = postA + B-delta.
+    const page = makePage(`${snap.postACumulative} Hey! Casual mode here.`);
     await expect(assertion(page)).resolves.toBeUndefined();
   });
 
-  it("text-diff assertion fails when value-A transcript was empty", async () => {
-    const snapshotA = { text: "" };
-    const assertion = buildKnobDiffAssertion("tone", "text", snapshotA);
+  it("text-diff assertion fails when value-A delta was empty", async () => {
+    const snap = snapshotFor("", "");
+    const assertion = buildKnobDiffAssertion("tone", "text", snap);
     const page = makePage("anything");
-    await expect(assertion(page)).rejects.toThrow(/value-A.*empty/);
+    await expect(assertion(page)).rejects.toThrow(/value-A delta was empty/);
   });
 
   it("text-diff assertion fails when B contains no new content", async () => {
-    const snapshotA = { text: "same response" };
-    const assertion = buildKnobDiffAssertion("tone", "text", snapshotA);
-    const page = makePage("same response");
+    const snap = snapshotFor("", "same response");
+    const assertion = buildKnobDiffAssertion("tone", "text", snap);
+    // Cumulative is unchanged after B turn — no suffix added.
+    const page = makePage(snap.postACumulative);
     await expect(assertion(page)).rejects.toThrow(/no new transcript/);
   });
 
-  it("length-diff assertion succeeds when B exceeds A by threshold", async () => {
-    const aText = "short concise reply.";
-    const snapshotA = { text: aText };
+  it("text-diff assertion fails when A and B deltas are byte-identical", async () => {
+    const snap = snapshotFor("", "matching reply.");
+    const assertion = buildKnobDiffAssertion("tone", "text", snap);
+    // Cumulative = postA + same reply repeated.
+    const page = makePage(`${snap.postACumulative} matching reply.`);
+    await expect(assertion(page)).rejects.toThrow(/byte-identical/);
+  });
+
+  it("length-diff compares per-turn deltas, not cumulative totals", async () => {
+    // Simulate the "third pair" scenario: prior knobs already pushed
+    // hundreds of chars onto the page. The aOnly delta is short and
+    // the bOnly delta is long (the +threshold case).
+    const priorCumulative = "x".repeat(500); // tone+expertise responses
+    const aDelta = "concise.";
+    const snap = snapshotFor(priorCumulative, aDelta);
+    const bDelta = "y".repeat(aDelta.length + RESPONSE_LENGTH_DELTA_MIN + 10);
     const assertion = buildKnobDiffAssertion(
       "responseLength",
       "length",
-      snapshotA,
+      snap,
     );
-    const longB = "x".repeat(aText.length + RESPONSE_LENGTH_DELTA_MIN + 10);
-    const page = makePage(`${aText} ${longB}`);
+    // Cumulative at B = postA + bDelta.
+    const page = makePage(`${snap.postACumulative} ${bDelta}`);
     await expect(assertion(page)).resolves.toBeUndefined();
   });
 
-  it("length-diff assertion fails when B is barely longer than A", async () => {
-    const aText = "short concise reply.";
-    const snapshotA = { text: aText };
+  it("length-diff assertion fails when B-delta is barely longer than A-delta", async () => {
+    const priorCumulative = "x".repeat(500);
+    const aDelta = "short concise reply.";
+    const snap = snapshotFor(priorCumulative, aDelta);
+    const bDelta = "y".repeat(aDelta.length + 10); // well below threshold
     const assertion = buildKnobDiffAssertion(
       "responseLength",
       "length",
-      snapshotA,
+      snap,
     );
-    const shortB = "x".repeat(aText.length + 10); // delta well below threshold
-    const page = makePage(`${aText} ${shortB}`);
+    const page = makePage(`${snap.postACumulative} ${bDelta}`);
     await expect(assertion(page)).rejects.toThrow(/chars longer/);
   });
 });
