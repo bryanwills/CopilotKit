@@ -853,6 +853,24 @@
       "response": {
         "content": "You have a note titled \"Book recommendations\" that is tagged with \"reading.\" It includes the following books: Thinking Fast and Slow by Daniel Kahneman, The Design of Everyday Things by Don Norman."
       }
+    },
+    {
+      "_comment": "readonly-state-agent-context — Who am I pill (B2 added with paraphrased prompt; locked verbatim).",
+      "match": {
+        "userMessage": "What do you know about me from my context?"
+      },
+      "response": {
+        "content": "I see you're Atai, and you're in the America/Los_Angeles timezone. Recently, you viewed the pricing page and watched the product demo video. How can I assist you today?"
+      }
+    },
+    {
+      "_comment": "readonly-state-agent-context — Suggest next steps pill (B2 added with paraphrased prompt; locked verbatim).",
+      "match": {
+        "userMessage": "Based on my recent activity, what should I try next?"
+      },
+      "response": {
+        "content": "Since you recently viewed the pricing page and watched the product demo video, it might be a good idea to explore user testimonials or case studies to see how others have benefited from the Pro Plan. You could also start the 14-day free trial to experience the features firsthand."
+      }
     }
   ]
 }
