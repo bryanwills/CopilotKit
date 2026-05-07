@@ -46,7 +46,10 @@ export interface GenuinePage extends ConversationPage {
   click(selector: string, opts?: { timeout?: number }): Promise<void>;
   route(
     url: string | RegExp,
-    handler: (route: GenuineRoute, request: GenuineRequest) => void | Promise<void>,
+    handler: (
+      route: GenuineRoute,
+      request: GenuineRequest,
+    ) => void | Promise<void>,
   ): Promise<void>;
   unroute?(url: string | RegExp): Promise<void>;
 }

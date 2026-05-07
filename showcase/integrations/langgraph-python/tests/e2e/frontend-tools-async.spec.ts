@@ -92,9 +92,7 @@ test.describe("Frontend Tools (async query_notes)", () => {
 
     // Anti-regression: the showcase-assistant catch-all from
     // feature-parity.json must NOT have intercepted this prompt.
-    await expect(
-      page.getByText("I'm your showcase assistant"),
-    ).toHaveCount(0);
+    await expect(page.getByText("I'm your showcase assistant")).toHaveCount(0);
   });
 
   test("reading pill → Notes DB card with Book recommendations + locked narration", async ({
@@ -121,7 +119,9 @@ test.describe("Frontend Tools (async query_notes)", () => {
     await expect(note).toBeVisible({ timeout: 30_000 });
     await expect(note.getByText("Book recommendations")).toBeVisible();
     await expect(note.getByText(/Thinking Fast and Slow/i)).toBeVisible();
-    await expect(note.getByText(/The Design of Everyday Things/i)).toBeVisible();
+    await expect(
+      note.getByText(/The Design of Everyday Things/i),
+    ).toBeVisible();
     await expect(note.getByText("reading", { exact: true })).toBeVisible();
 
     // Locked narration leading phrase — proves the deterministic 2nd-turn
@@ -130,7 +130,8 @@ test.describe("Frontend Tools (async query_notes)", () => {
       page
         .locator('[data-role="assistant"]')
         .filter({
-          hasText: 'You have a note titled "Book recommendations" that is tagged with "reading',
+          hasText:
+            'You have a note titled "Book recommendations" that is tagged with "reading',
         })
         .first(),
     ).toBeVisible({ timeout: 60_000 });

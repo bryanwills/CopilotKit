@@ -130,7 +130,11 @@ export async function probeSubagents(
     ).length;
     const text = (win.document.body.textContent ?? "").toLowerCase();
     return {
-      counts: { "subagent-card-researcher": researcher, "subagent-card-writer": writer, "subagent-card-critic": critic },
+      counts: {
+        "subagent-card-researcher": researcher,
+        "subagent-card-writer": writer,
+        "subagent-card-critic": critic,
+      },
       text,
     };
   });

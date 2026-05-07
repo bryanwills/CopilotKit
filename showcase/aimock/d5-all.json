@@ -1784,17 +1784,29 @@
                 {
                   "id": "metric-revenue",
                   "type": "Metric",
-                  "props": { "label": "Revenue", "value": "$1.2M", "trend": "up" }
+                  "props": {
+                    "label": "Revenue",
+                    "value": "$1.2M",
+                    "trend": "up"
+                  }
                 },
                 {
                   "id": "metric-signups",
                   "type": "Metric",
-                  "props": { "label": "Signups", "value": "4,820", "trend": "up" }
+                  "props": {
+                    "label": "Signups",
+                    "value": "4,820",
+                    "trend": "up"
+                  }
                 },
                 {
                   "id": "metric-churn",
                   "type": "Metric",
-                  "props": { "label": "Churn", "value": "2.1%", "trend": "down" }
+                  "props": {
+                    "label": "Churn",
+                    "value": "2.1%",
+                    "trend": "down"
+                  }
                 }
               ],
               "data": {}

@@ -42,7 +42,11 @@ test.describe("Open Generative UI (advanced)", () => {
     });
 
     // Suggestion titles are verbatim from openGenUiSuggestions.
-    const expected = ["Calculator", "Ping the host", "Inline expression evaluator"];
+    const expected = [
+      "Calculator",
+      "Ping the host",
+      "Inline expression evaluator",
+    ];
     const suggestions = page.locator('[data-testid="copilot-suggestion"]');
     for (const title of expected) {
       await expect(suggestions.filter({ hasText: title }).first()).toBeVisible({

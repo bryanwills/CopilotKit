@@ -114,11 +114,7 @@ describe("D5 tool-rendering-custom-catchall — assertCustomCatchall", () => {
       containerCount: 2,
     });
     await expect(
-      mod.assertCustomCatchall(
-        page,
-        ["get_weather", "get_stock_price"],
-        50,
-      ),
+      mod.assertCustomCatchall(page, ["get_weather", "get_stock_price"], 50),
     ).resolves.toBeUndefined();
   });
 
@@ -129,11 +125,7 @@ describe("D5 tool-rendering-custom-catchall — assertCustomCatchall", () => {
       containerCount: 1,
     });
     await expect(
-      mod.assertCustomCatchall(
-        page,
-        ["get_weather", "get_stock_price"],
-        30,
-      ),
+      mod.assertCustomCatchall(page, ["get_weather", "get_stock_price"], 30),
     ).rejects.toThrow(/get_stock_price/);
   });
 });
@@ -146,6 +138,8 @@ describe("D5 tool-rendering-custom-catchall — exported constants", () => {
     expect(mod.PROMPT_TOOL_PAIRS[0].tool).toBe("get_weather");
     expect(mod.PROMPT_TOOL_PAIRS[0].prompt).toBe("weather in Tokyo");
     expect(mod.PROMPT_TOOL_PAIRS[1].tool).toBe("get_stock_price");
-    expect(mod.PROMPT_TOOL_PAIRS[1].prompt).toBe("What's the current price of AAPL?");
+    expect(mod.PROMPT_TOOL_PAIRS[1].prompt).toBe(
+      "What's the current price of AAPL?",
+    );
   });
 });

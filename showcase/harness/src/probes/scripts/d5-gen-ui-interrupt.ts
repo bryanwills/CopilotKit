@@ -47,12 +47,7 @@ export function buildInterruptAssertion(
   return async (page: Page): Promise<void> => {
     const tag = `gen-ui-interrupt-${pillTag}`;
     // Step 1: wait for the time picker to mount.
-    await waitForTestId(
-      page,
-      "time-picker-card",
-      FIRST_SIGNAL_TIMEOUT_MS,
-      tag,
-    );
+    await waitForTestId(page, "time-picker-card", FIRST_SIGNAL_TIMEOUT_MS, tag);
     // Step 2: click the first slot. The runner's structural Page
     // doesn't expose `.click()`; runtime-cast and verify.
     const clickable = asGenuinePage(page, tag);

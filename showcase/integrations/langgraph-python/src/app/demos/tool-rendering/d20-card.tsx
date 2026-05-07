@@ -38,7 +38,7 @@ export function D20Card({ loading, value }: D20CardProps) {
           data-testid="d20-value"
           className="font-mono text-2xl font-semibold text-[#010507]"
         >
-          {loading ? "…" : display ?? "—"}
+          {loading ? "…" : (display ?? "—")}
         </div>
       </div>
       {isCrit ? (

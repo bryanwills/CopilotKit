@@ -32,9 +32,9 @@ test.describe("Tool Rendering", () => {
       "Roll a d20",
       "Chain tools",
     ]) {
-      await expect(
-        suggestions.filter({ hasText: title }).first(),
-      ).toBeVisible({ timeout: SUGGESTION_TIMEOUT });
+      await expect(suggestions.filter({ hasText: title }).first()).toBeVisible({
+        timeout: SUGGESTION_TIMEOUT,
+      });
     }
   });
 
@@ -47,15 +47,17 @@ test.describe("Tool Rendering", () => {
 
     const card = page.locator('[data-testid="weather-card"]').first();
     await expect(card).toBeVisible({ timeout: TOOL_TIMEOUT });
-    await expect(
-      card.locator('[data-testid="weather-city"]'),
-    ).toContainText("San Francisco", { timeout: TOOL_TIMEOUT });
+    await expect(card.locator('[data-testid="weather-city"]')).toContainText(
+      "San Francisco",
+      { timeout: TOOL_TIMEOUT },
+    );
     await expect(
       card.locator('[data-testid="weather-humidity"]'),
     ).toContainText("55%", { timeout: TOOL_TIMEOUT });
-    await expect(
-      card.locator('[data-testid="weather-wind"]'),
-    ).toContainText("10", { timeout: TOOL_TIMEOUT });
+    await expect(card.locator('[data-testid="weather-wind"]')).toContainText(
+      "10",
+      { timeout: TOOL_TIMEOUT },
+    );
   });
 
   test("Find flights pill renders the flights card with deterministic flights", async ({
@@ -69,9 +71,10 @@ test.describe("Tool Rendering", () => {
 
     const card = page.locator('[data-testid="flights-card"]').first();
     await expect(card).toBeVisible({ timeout: TOOL_TIMEOUT });
-    await expect(
-      card.locator('[data-testid="flight-origin"]'),
-    ).toContainText("SFO", { timeout: TOOL_TIMEOUT });
+    await expect(card.locator('[data-testid="flight-origin"]')).toContainText(
+      "SFO",
+      { timeout: TOOL_TIMEOUT },
+    );
     await expect(
       card.locator('[data-testid="flight-destination"]'),
     ).toContainText("JFK", { timeout: TOOL_TIMEOUT });
@@ -79,7 +82,9 @@ test.describe("Tool Rendering", () => {
     // At least 2 flight rows from the deterministic fixture (NOT the
     // a2ui beautiful-chat boilerplate — a2ui shows a different shell).
     const rows = card.locator('[data-testid="flight-row"]');
-    await expect.poll(async () => rows.count(), { timeout: TOOL_TIMEOUT }).toBeGreaterThanOrEqual(2);
+    await expect
+      .poll(async () => rows.count(), { timeout: TOOL_TIMEOUT })
+      .toBeGreaterThanOrEqual(2);
   });
 
   test("Stock price pill renders the AAPL stock card", async ({ page }) => {
@@ -152,8 +157,8 @@ test.describe("Tool Rendering", () => {
     await expect(
       page.locator('[data-testid="flights-card"]').first(),
     ).toBeVisible({ timeout: TOOL_TIMEOUT });
-    await expect(
-      page.locator('[data-testid="d20-card"]').first(),
-    ).toBeVisible({ timeout: TOOL_TIMEOUT });
+    await expect(page.locator('[data-testid="d20-card"]').first()).toBeVisible({
+      timeout: TOOL_TIMEOUT,
+    });
   });
 });

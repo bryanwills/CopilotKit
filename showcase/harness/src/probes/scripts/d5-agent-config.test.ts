@@ -23,10 +23,7 @@ function makePage(transcript: string): Page {
 /** Construct a KnobSnapshot whose `aOnly` is the supplied A-delta and
  *  whose `postACumulative` is the priorCumulative + aOnly — matching
  *  what the snapshot assertion would have populated had it run. */
-function snapshotFor(
-  priorCumulative: string,
-  aOnly: string,
-): KnobSnapshot {
+function snapshotFor(priorCumulative: string, aOnly: string): KnobSnapshot {
   return {
     priorCumulative,
     postACumulative: `${priorCumulative} ${aOnly}`.trim(),
@@ -103,11 +100,7 @@ describe("d5-agent-config script", () => {
     const aDelta = "concise.";
     const snap = snapshotFor(priorCumulative, aDelta);
     const bDelta = "y".repeat(aDelta.length + RESPONSE_LENGTH_DELTA_MIN + 10);
-    const assertion = buildKnobDiffAssertion(
-      "responseLength",
-      "length",
-      snap,
-    );
+    const assertion = buildKnobDiffAssertion("responseLength", "length", snap);
     // Cumulative at B = postA + bDelta.
     const page = makePage(`${snap.postACumulative} ${bDelta}`);
     await expect(assertion(page)).resolves.toBeUndefined();
@@ -118,11 +111,7 @@ describe("d5-agent-config script", () => {
     const aDelta = "short concise reply.";
     const snap = snapshotFor(priorCumulative, aDelta);
     const bDelta = "y".repeat(aDelta.length + 10); // well below threshold
-    const assertion = buildKnobDiffAssertion(
-      "responseLength",
-      "length",
-      snap,
-    );
+    const assertion = buildKnobDiffAssertion("responseLength", "length", snap);
     const page = makePage(`${snap.postACumulative} ${bDelta}`);
     await expect(assertion(page)).rejects.toThrow(/chars longer/);
   });

@@ -147,10 +147,11 @@ export async function assertCustomCatchall(
       return;
     }
     if (pollCount === 1 || pollCount % 10 === 0) {
-      console.debug(
-        "[d5-tool-rendering-custom-catchall] not ready yet",
-        { pollCount, lastError, snap },
-      );
+      console.debug("[d5-tool-rendering-custom-catchall] not ready yet", {
+        pollCount,
+        lastError,
+        snap,
+      });
     }
     await new Promise<void>((r) => setTimeout(r, POLL_INTERVAL_MS));
   }

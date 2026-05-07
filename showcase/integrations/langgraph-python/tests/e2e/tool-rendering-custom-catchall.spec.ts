@@ -26,9 +26,9 @@ test.describe("Tool Rendering — Custom Catch-all (branded wildcard)", () => {
   test("page loads with composer and 4 suggestion pills", async ({ page }) => {
     const suggestions = page.locator('[data-testid="copilot-suggestion"]');
     for (const title of PILLS) {
-      await expect(
-        suggestions.filter({ hasText: title }).first(),
-      ).toBeVisible({ timeout: SUGGESTION_TIMEOUT });
+      await expect(suggestions.filter({ hasText: title }).first()).toBeVisible({
+        timeout: SUGGESTION_TIMEOUT,
+      });
     }
 
     // Sanity: per-tool branded testids from sibling cells stay at zero.

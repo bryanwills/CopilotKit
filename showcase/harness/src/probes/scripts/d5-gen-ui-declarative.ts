@@ -97,9 +97,7 @@ async function readDeclarativeTestIds(page: Page): Promise<{
       document: { querySelector(sel: string): unknown };
     };
     return {
-      card: !!win.document.querySelector(
-        '[data-testid="declarative-card"]',
-      ),
+      card: !!win.document.querySelector('[data-testid="declarative-card"]'),
       metric: !!win.document.querySelector(
         '[data-testid="declarative-metric"]',
       ),

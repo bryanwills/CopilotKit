@@ -76,7 +76,16 @@ export const FRONTEND_TOOL_PILLS = [
  *  signal is ever required, use a FULL 6-digit code drawn from the
  *  actual fixture rather than a 1-2 character prefix. */
 export const PILL_GRADIENT_HINTS: Record<string, readonly string[]> = {
-  sunset: ["sunset", "orange", "red", "rose", "pink", "amber", "coral", "peach"],
+  sunset: [
+    "sunset",
+    "orange",
+    "red",
+    "rose",
+    "pink",
+    "amber",
+    "coral",
+    "peach",
+  ],
   forest: ["forest", "green", "emerald", "lime", "olive", "teal"],
   cosmic: [
     "cosmic",

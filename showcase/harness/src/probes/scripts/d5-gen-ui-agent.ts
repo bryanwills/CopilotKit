@@ -57,9 +57,7 @@ async function readAgentStepState(page: Page): Promise<{
         ): ArrayLike<{ textContent: string | null }>;
       };
     };
-    const nodes = win.document.querySelectorAll(
-      '[data-testid="agent-step"]',
-    );
+    const nodes = win.document.querySelectorAll('[data-testid="agent-step"]');
     let acc = "";
     for (let i = 0; i < nodes.length; i++) {
       acc += " " + (nodes[i]!.textContent ?? "");

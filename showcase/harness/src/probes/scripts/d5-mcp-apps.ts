@@ -58,19 +58,14 @@ const IFRAME_POLL_INTERVAL_MS = 250;
  * Playwright serialisation boundary). The hard-coded list MUST stay in
  * sync with `MCP_APP_IFRAME_SELECTORS`.
  */
-export async function probeIframeSelector(
-  page: Page,
-): Promise<string | null> {
+export async function probeIframeSelector(page: Page): Promise<string | null> {
   return await page.evaluate(() => {
     const win = globalThis as unknown as {
       document: {
         querySelector(sel: string): unknown;
       };
     };
-    const selectors = [
-      '[data-testid="mcp-app-iframe"]',
-      "iframe[sandbox]",
-    ];
+    const selectors = ['[data-testid="mcp-app-iframe"]', "iframe[sandbox]"];
     for (const sel of selectors) {
       if (win.document.querySelector(sel)) return sel;
     }

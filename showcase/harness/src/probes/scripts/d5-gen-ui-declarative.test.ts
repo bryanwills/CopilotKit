@@ -121,9 +121,7 @@ describe("d5-gen-ui-declarative script", () => {
       (p) => p.tag === "status-report",
     );
     expect(statusReport).toBeDefined();
-    expect(statusReport!.expectedTestIds).toEqual([
-      "declarative-status-badge",
-    ]);
+    expect(statusReport!.expectedTestIds).toEqual(["declarative-status-badge"]);
     // declarative-card alone must NOT satisfy status-report — pill 1
     // (kpi-dashboard) leaves a card in the DOM, so requiring status-badge
     // is what prevents trivial passes via leftover.

@@ -54,9 +54,7 @@ async function waitForAllCardsDone(page: Page): Promise<void> {
   // before we assert on result content (the result `<div>` only
   // mounts when the tool-render status hits `complete`).
   for (const role of ROLES) {
-    const card = page
-      .locator(`[data-testid="subagent-card-${role}"]`)
-      .first();
+    const card = page.locator(`[data-testid="subagent-card-${role}"]`).first();
     await expect(card).toBeVisible({ timeout: 90_000 });
     await expect(card).toHaveAttribute("data-status", "complete", {
       timeout: 90_000,
@@ -64,10 +62,7 @@ async function waitForAllCardsDone(page: Page): Promise<void> {
   }
 }
 
-async function assertCardResultGenuine(
-  page: Page,
-  role: Role,
-): Promise<void> {
+async function assertCardResultGenuine(page: Page, role: Role): Promise<void> {
   const card = page.locator(`[data-testid="subagent-card-${role}"]`).first();
   const result = card.locator('[data-testid="subagent-result"]').first();
   await expect(result).toBeVisible({ timeout: 30_000 });

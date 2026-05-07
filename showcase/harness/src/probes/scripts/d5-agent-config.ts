@@ -69,16 +69,15 @@ export const AGENT_CONFIG_PROBES = [
   },
   {
     knob: "expertise",
-    promptA: "expertise:beginner — explain how copilotkit works per your config",
+    promptA:
+      "expertise:beginner — explain how copilotkit works per your config",
     promptB: "expertise:expert — explain how copilotkit works per your config",
     diff: "text" as const,
   },
   {
     knob: "responseLength",
-    promptA:
-      "responseLength:concise — describe agent context per your config",
-    promptB:
-      "responseLength:detailed — describe agent context per your config",
+    promptA: "responseLength:concise — describe agent context per your config",
+    promptB: "responseLength:detailed — describe agent context per your config",
     /** Detailed must be ≥ concise + RESPONSE_LENGTH_DELTA_MIN chars. */
     diff: "length" as const,
   },
@@ -157,7 +156,9 @@ function buildSnapshotAssertion(
   return async (page: Page): Promise<void> => {
     const post = (await readAssistantTranscript(page)).trim();
     const prior = target.priorCumulative.trim();
-    const aOnly = post.startsWith(prior) ? post.slice(prior.length).trim() : post;
+    const aOnly = post.startsWith(prior)
+      ? post.slice(prior.length).trim()
+      : post;
     if (aOnly.length === 0) {
       throw new Error(
         `agent-config-${knob}: value-A turn produced no new transcript content — fixture may not be matching`,

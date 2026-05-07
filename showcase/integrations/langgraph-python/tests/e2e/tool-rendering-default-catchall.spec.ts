@@ -25,9 +25,9 @@ test.describe("Tool Rendering — Default Catch-all", () => {
   test("page loads with composer and 4 suggestion pills", async ({ page }) => {
     const suggestions = page.locator('[data-testid="copilot-suggestion"]');
     for (const title of PILLS) {
-      await expect(
-        suggestions.filter({ hasText: title }).first(),
-      ).toBeVisible({ timeout: SUGGESTION_TIMEOUT });
+      await expect(suggestions.filter({ hasText: title }).first()).toBeVisible({
+        timeout: SUGGESTION_TIMEOUT,
+      });
     }
 
     // Sanity: branded sibling-cell testids stay at zero on this cell.
@@ -58,7 +58,9 @@ test.describe("Tool Rendering — Default Catch-all", () => {
 
     // Args are pinned to San Francisco (verbatim pill prompt → fixture).
     await expect
-      .poll(async () => card.getAttribute("data-args"), { timeout: TOOL_TIMEOUT })
+      .poll(async () => card.getAttribute("data-args"), {
+        timeout: TOOL_TIMEOUT,
+      })
       .toContain("San Francisco");
 
     // No branded sibling-cell card mounted.
@@ -87,7 +89,9 @@ test.describe("Tool Rendering — Default Catch-all", () => {
     // Result attribute carries the deterministic fixture flights (NOT
     // the a2ui beautiful-chat shape).
     await expect
-      .poll(async () => card.getAttribute("data-result"), { timeout: TOOL_TIMEOUT })
+      .poll(async () => card.getAttribute("data-result"), {
+        timeout: TOOL_TIMEOUT,
+      })
       .toMatch(/United|Delta|JetBlue/);
 
     await expect(page.locator('[data-testid="flights-card"]')).toHaveCount(0);

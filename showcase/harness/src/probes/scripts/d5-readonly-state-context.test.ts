@@ -46,7 +46,11 @@ describe("d5-readonly-state-context script", () => {
         CONTEXT_NAME_SENTINEL +
         '"}]}',
     };
-    const assertion = buildContextAssertion("test", capture, CONTEXT_NAME_SENTINEL);
+    const assertion = buildContextAssertion(
+      "test",
+      capture,
+      CONTEXT_NAME_SENTINEL,
+    );
     const page: Page = {
       async waitForSelector() {},
       async fill() {},
@@ -60,7 +64,11 @@ describe("d5-readonly-state-context script", () => {
 
   it("assertion fails when no request body has been captured", async () => {
     const capture = { getLastBody: () => null };
-    const assertion = buildContextAssertion("test", capture, CONTEXT_NAME_SENTINEL);
+    const assertion = buildContextAssertion(
+      "test",
+      capture,
+      CONTEXT_NAME_SENTINEL,
+    );
     // Use a tiny effective deadline by mocking a fast loop. The
     // assertion polls forever otherwise; we accept a slow test here
     // by allowing it to time out at FIRST_SIGNAL_TIMEOUT_MS — but the
@@ -94,7 +102,11 @@ describe("d5-readonly-state-context script", () => {
         return '{"messages":[{"role":"user","content":"hi"}]}';
       },
     };
-    const assertion = buildContextAssertion("test", capture, CONTEXT_NAME_SENTINEL);
+    const assertion = buildContextAssertion(
+      "test",
+      capture,
+      CONTEXT_NAME_SENTINEL,
+    );
     const page: Page = {
       async waitForSelector() {},
       async fill() {},

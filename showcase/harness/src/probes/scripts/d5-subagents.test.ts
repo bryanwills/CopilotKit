@@ -213,9 +213,9 @@ describe("D5 subagents assertSubagentsChain", () => {
         text: "real reply with substance",
       },
     ]);
-    await expect(
-      mod.assertSubagentsChain(page, 50, 5),
-    ).rejects.toThrow(/destabilised during/);
+    await expect(mod.assertSubagentsChain(page, 50, 5)).rejects.toThrow(
+      /destabilised during/,
+    );
   });
 
   it("flags the empty-sub-agent sentinel as boilerplate", async () => {

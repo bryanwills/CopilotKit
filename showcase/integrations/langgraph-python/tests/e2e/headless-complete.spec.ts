@@ -34,7 +34,9 @@ test.describe("Headless Chat (Complete)", () => {
   test("page loads with custom composer and four suggestion pills", async ({
     page,
   }) => {
-    await expect(page.locator('[data-testid="headless-composer"]')).toBeVisible();
+    await expect(
+      page.locator('[data-testid="headless-composer"]'),
+    ).toBeVisible();
 
     // Pills use aria-label `Try suggestion: ${prompt}` so screen readers can
     // disambiguate. We assert all four are mounted on first paint.
@@ -55,9 +57,7 @@ test.describe("Headless Chat (Complete)", () => {
   test("weather pill renders the headless WeatherCard via useRenderTool plus the deterministic narration", async ({
     page,
   }) => {
-    await page
-      .getByRole("button", { name: PILL_WEATHER, exact: true })
-      .click();
+    await page.getByRole("button", { name: PILL_WEATHER, exact: true }).click();
 
     const card = page.locator('[data-testid="headless-weather-card"]').first();
     await expect(card).toBeVisible({ timeout: ASSERT_TIMEOUT });
@@ -127,9 +127,7 @@ test.describe("Headless Chat (Complete)", () => {
   }) => {
     await page.getByRole("button", { name: PILL_CHART, exact: true }).click();
 
-    const card = page
-      .locator('[data-testid="headless-revenue-chart"]')
-      .first();
+    const card = page.locator('[data-testid="headless-revenue-chart"]').first();
     await expect(card).toBeVisible({ timeout: ASSERT_TIMEOUT });
     await expect(card).toContainText("Quarterly revenue");
     await expect(card).toContainText("Last six months · USD thousands");

@@ -27,8 +27,7 @@ const PILL_FACT = "Give me a fun fact.";
 // returns the leading phrase below; if fixture priority ever misroutes
 // this prompt to the catch-all, this assertion will fail with a clear
 // "expected non-boilerplate greeting" diff.
-const HELLO_LEADING =
-  "Hi! In one short sentence: I'm a CopilotKit demo agent";
+const HELLO_LEADING = "Hi! In one short sentence: I'm a CopilotKit demo agent";
 const JOKE_LEADING =
   "Why did the scarecrow win an award? Because he was outstanding in his field!";
 const FACT_LEADING = "A fun fact: Honey never spoils!";
@@ -45,7 +44,9 @@ test.describe("Headless Chat (Simple)", () => {
   }) => {
     // Custom composer is the structural signal that the demo is headless;
     // no default CopilotChat input is rendered on this surface.
-    await expect(page.locator('[data-testid="headless-composer"]')).toBeVisible();
+    await expect(
+      page.locator('[data-testid="headless-composer"]'),
+    ).toBeVisible();
 
     // The 3 empty-state pills are hand-rolled <button>s containing the
     // verbatim sample prompts.
@@ -63,9 +64,7 @@ test.describe("Headless Chat (Simple)", () => {
   test("clicking the hello pill renders the deterministic greeting in the custom assistant bubble", async ({
     page,
   }) => {
-    await page
-      .getByRole("button", { name: PILL_HELLO, exact: true })
-      .click();
+    await page.getByRole("button", { name: PILL_HELLO, exact: true }).click();
 
     const assistant = page
       .locator('[data-testid="headless-message-assistant"]')

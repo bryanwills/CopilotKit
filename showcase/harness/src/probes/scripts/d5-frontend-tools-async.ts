@@ -57,7 +57,11 @@ async function readNotesCardSettled(page: Page): Promise<{
       hasListItems: listItems.length > 0,
       hasEmptyState: bodyText.includes("No notes matched"),
     };
-  })) as { cardMounted: boolean; hasListItems: boolean; hasEmptyState: boolean };
+  })) as {
+    cardMounted: boolean;
+    hasListItems: boolean;
+    hasEmptyState: boolean;
+  };
 }
 
 export function buildAsyncToolsAssertion(opts?: {
@@ -71,7 +75,11 @@ export function buildAsyncToolsAssertion(opts?: {
     // never reaches a settled shape so this catches a regression where
     // the async handler hangs without resolving.
     const deadline = Date.now() + SIBLING_TIMEOUT_MS;
-    let last = { cardMounted: false, hasListItems: false, hasEmptyState: false };
+    let last = {
+      cardMounted: false,
+      hasListItems: false,
+      hasEmptyState: false,
+    };
     while (Date.now() < deadline) {
       last = await readNotesCardSettled(page);
       if (last.hasListItems || last.hasEmptyState) return;
