@@ -152,7 +152,7 @@ demos:
     highlight:
       - src/app/demos/hitl-in-chat/page.tsx
       - src/app/demos/hitl-in-chat/time-picker-card.tsx
-      - src/agents/hitl_in_chat.py
+      - src/agents/hitl_in_chat_agent.py
       - src/app/api/copilotkit/route.ts
   - id: hitl-in-app
     name: "Human in the Loop: In-App"
@@ -272,7 +272,7 @@ demos:
     highlight:
       - src/agents/main.py
       - src/app/demos/chat-slots/page.tsx
-      - src/app/demos/chat-slots/custom-welcome-screen.tsx
+      - src/app/demos/chat-slots/slot-wrappers.tsx
       - src/app/api/copilotkit/route.ts
   - id: headless-simple
     name: "Headless UI: Simple"
@@ -335,7 +335,7 @@ demos:
     highlight:
       - src/agents/interrupt_agent.py
       - src/app/demos/gen-ui-interrupt/page.tsx
-      - src/app/demos/gen-ui-interrupt/time-picker-card.tsx
+      - src/app/demos/gen-ui-interrupt/_components/time-picker-card.tsx
       - src/app/api/copilotkit/route.ts
   - id: declarative-gen-ui
     name: "Declarative UI: A2UI"
@@ -376,7 +376,7 @@ demos:
     highlight:
       - src/agents/mcp_apps_agent.py
       - src/app/demos/mcp-apps/page.tsx
-      - src/app/api/copilotkit-mcp-apps/route.ts
+      - src/app/api/copilotkit-mcp-apps/[[...slug]]/route.ts
   - id: readonly-state-agent-context
     name: Frontend Context Sharing
     description: Frontend provides read-only context to the agent via useAgentContext
