@@ -19,12 +19,14 @@ from langchain.tools import tool
 from langchain_openai import ChatOpenAI
 from copilotkit import CopilotKitMiddleware
 
-# One-tool-per-question prompt.
+# Multi-tool-per-question prompt.
 #
 # This backend serves the tool-rendering demos, whose JOB is to show the
-# rendering patterns (per-tool, catch-all, default fallback). One tool
-# call per user turn is enough to demonstrate them — chained calls just
-# clutter the chat and surprise users.
+# rendering patterns (per-tool, catch-all, default fallback). The agent
+# may call multiple tools per turn when the user asks for them. The
+# `roll_d20` tool accepts a deterministic `value` parameter so the
+# aimock fixtures can script the exact dice sequence the e2e tests
+# assert against.
 SYSTEM_PROMPT = (
     "You are a helpful travel & lifestyle concierge. You have mock tools "
     "for weather, flights, stock prices, and dice rolls — they all return "
@@ -35,14 +37,12 @@ SYSTEM_PROMPT = (
     "destination (default origin to 'SFO' if the user only names a "
     "destination).\n"
     "  - Stock questions → call `get_stock_price` with the ticker.\n"
-    "  - Dice rolls → call `roll_dice` with the requested sides.\n"
+    "  - d20 rolls → call `roll_d20` (it returns a deterministic value).\n"
     "  - Anything else → reply in plain text.\n\n"
-    "By default, call exactly ONE tool per user question and do NOT chain "
-    "tools or fetch related data the user didn't ask for. The ONLY "
-    "exception is when the user explicitly asks you to chain or call "
-    "multiple tools in a single turn — then call each tool the user "
-    "requested. After tools return, write one short sentence summarizing "
-    "the result. Never fabricate data a tool could provide."
+    "When the user asks you to chain or call multiple tools in a single "
+    "turn, call each tool they requested. After tools return, write one "
+    "short sentence summarizing the result. Never fabricate data a tool "
+    "could provide."
 )
 
 
@@ -103,16 +103,23 @@ def get_stock_price(ticker: str) -> dict:
 
 
 @tool
-def roll_dice(sides: int = 6) -> dict:
-    """Roll a single die with the given number of sides."""
-    return {"sides": sides, "result": randint(1, max(2, sides))}
+def roll_d20(value: int = 0) -> dict:
+    """Roll a 20-sided die.
+
+    The `value` argument lets the LLM (or aimock fixture) script a
+    deterministic roll for testing — the tool simply echoes it back as
+    the result. When called without `value` (or with 0), the tool
+    returns a random natural d20 roll.
+    """
+    rolled = value if isinstance(value, int) and 1 <= value <= 20 else randint(1, 20)
+    return {"sides": 20, "value": rolled, "result": rolled}
 
 
 model = ChatOpenAI(model="gpt-4o-mini")
 
 graph = create_agent(
     model=model,
-    tools=[get_weather, search_flights, get_stock_price, roll_dice],
+    tools=[get_weather, search_flights, get_stock_price, roll_d20],
     middleware=[CopilotKitMiddleware()],
     system_prompt=SYSTEM_PROMPT,
 )
