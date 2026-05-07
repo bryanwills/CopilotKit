@@ -1344,7 +1344,10 @@ describe("POST /api/probes/:id/trigger — rate-limit TOCTOU & rollback", () => 
       }),
     ]);
     // Exactly one must have succeeded; the other must be 429.
-    const statuses = [first.status, second.status].sort();
+    // Use a numeric comparator — default `Array.prototype.sort()` is
+    // lexicographic and would order [200, 429] correctly only by
+    // accident (and would mis-order something like [200, 1000]).
+    const statuses = [first.status, second.status].sort((a, b) => a - b);
     expect(statuses).toEqual([200, 429]);
   });
 
