@@ -30,7 +30,7 @@
       }
     },
     {
-      "match": { "userMessage": "navy" },
+      "match": { "userMessage": "navy → magenta cosmic gradient" },
       "response": {
         "content": "Cosmic gradient applied — navy fading to magenta.",
         "toolCalls": [

@@ -1,5 +1,5 @@
 {
-  "_comment": "Bundled D5 (e2e-deep) fixtures. Source files: showcase/harness/fixtures/d5/*.json (auto-merged). Uses hasToolResult matching for multi-turn disambiguation. Loaded by aimock before feature-parity.json for match precedence. The first 7 entries below are the open-gen-ui (4) and open-gen-ui-advanced (3) pill fixtures — they emit deterministic generateSandboxedUi tool calls and intentionally appear before everything else so they win first-match-wins ordering against the showcase-assistant 'hi' catch-all in feature-parity.json. Verbatim pill messages are owned by langgraph-python/src/app/demos/open-gen-ui/suggestions.ts and open-gen-ui-advanced/suggestions.ts. Source-of-truth: showcase/harness/fixtures/d5/gen-ui-open.json.",
+  "_comment": "Bundled D5 (e2e-deep) fixtures. Source files: showcase/harness/fixtures/d5/*.json (auto-merged). Uses hasToolResult matching for multi-turn disambiguation. Loaded by aimock before feature-parity.json for match precedence. Ordering convention: high-priority verbatim-prompt fixtures appear first so they win first-match-wins ordering against the showcase-assistant 'hi' catch-all in feature-parity.json (and against any later, broader substring matchers in this file). The exact set of high-priority entries shifts as features land — do not rely on a specific position for any group; rely on the per-fixture _comment headers and the source-of-truth note on each per-feature file under showcase/harness/fixtures/d5/.",
   "fixtures": [
     {
       "_comment": "headless-simple pill 1: locks the deterministic greeting leading phrase.",
@@ -1150,7 +1150,7 @@
     },
     {
       "match": {
-        "userMessage": "AAPL trading",
+        "userMessage": "AAPL",
         "toolCallId": "call_d5_get_stock_price_001"
       },
       "response": {
@@ -1159,7 +1159,7 @@
     },
     {
       "match": {
-        "userMessage": "AAPL trading"
+        "userMessage": "AAPL"
       },
       "response": {
         "toolCalls": [
@@ -1173,23 +1173,23 @@
     },
     {
       "match": {
-        "userMessage": "Highlight 'meeting at 3pm'",
+        "userMessage": "ship the demo on Friday",
         "toolCallId": "call_d5_highlight_note_001"
       },
       "response": {
-        "content": "Highlighted 'meeting at 3pm' in yellow above. Let me know if you want a different color or a longer note."
+        "content": "Highlighted 'ship the demo on Friday' in yellow above. Let me know if you want a different color or a longer note."
       }
     },
     {
       "match": {
-        "userMessage": "Highlight 'meeting at 3pm'"
+        "userMessage": "ship the demo on Friday"
       },
       "response": {
         "toolCalls": [
           {
             "id": "call_d5_highlight_note_001",
             "name": "highlight_note",
-            "arguments": "{\"text\":\"meeting at 3pm\",\"color\":\"yellow\"}"
+            "arguments": "{\"text\":\"ship the demo on Friday\",\"color\":\"yellow\"}"
           }
         ]
       }
@@ -1576,7 +1576,7 @@
     },
     {
       "match": {
-        "userMessage": "navy"
+        "userMessage": "navy → magenta cosmic gradient"
       },
       "response": {
         "content": "Cosmic gradient applied — navy fading to magenta.",
@@ -1759,6 +1759,167 @@
       }
     },
     {
+      "_comment": "render_a2ui — KPI dashboard pill. Emits Card root with three Metric children (revenue, signups, churn) so the probe sees declarative-card + declarative-metric.",
+      "match": {
+        "userMessage": "KPI dashboard",
+        "toolName": "render_a2ui"
+      },
+      "response": {
+        "toolCalls": [
+          {
+            "name": "render_a2ui",
+            "arguments": {
+              "surfaceId": "declarative-surface",
+              "catalogId": "declarative-gen-ui-catalog",
+              "components": [
+                {
+                  "id": "root",
+                  "type": "Card",
+                  "props": {
+                    "title": "KPI dashboard",
+                    "subtitle": "Last 30 days",
+                    "child": "metric-revenue"
+                  }
+                },
+                {
+                  "id": "metric-revenue",
+                  "type": "Metric",
+                  "props": { "label": "Revenue", "value": "$1.2M", "trend": "up" }
+                },
+                {
+                  "id": "metric-signups",
+                  "type": "Metric",
+                  "props": { "label": "Signups", "value": "4,820", "trend": "up" }
+                },
+                {
+                  "id": "metric-churn",
+                  "type": "Metric",
+                  "props": { "label": "Churn", "value": "2.1%", "trend": "down" }
+                }
+              ],
+              "data": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "_comment": "render_a2ui — pie-chart pill. Emits a PieChart so the probe sees declarative-pie-chart.",
+      "match": {
+        "userMessage": "pie chart of sales by region",
+        "toolName": "render_a2ui"
+      },
+      "response": {
+        "toolCalls": [
+          {
+            "name": "render_a2ui",
+            "arguments": {
+              "surfaceId": "declarative-surface",
+              "catalogId": "declarative-gen-ui-catalog",
+              "components": [
+                {
+                  "id": "root",
+                  "type": "PieChart",
+                  "props": {
+                    "title": "Sales by region",
+                    "description": "Q4 — share of total revenue",
+                    "data": [
+                      { "label": "North America", "value": 540 },
+                      { "label": "EMEA", "value": 320 },
+                      { "label": "APAC", "value": 210 },
+                      { "label": "LATAM", "value": 90 }
+                    ]
+                  }
+                }
+              ],
+              "data": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "_comment": "render_a2ui — bar-chart pill. Emits a BarChart so the probe sees declarative-bar-chart.",
+      "match": {
+        "userMessage": "bar chart of quarterly revenue",
+        "toolName": "render_a2ui"
+      },
+      "response": {
+        "toolCalls": [
+          {
+            "name": "render_a2ui",
+            "arguments": {
+              "surfaceId": "declarative-surface",
+              "catalogId": "declarative-gen-ui-catalog",
+              "components": [
+                {
+                  "id": "root",
+                  "type": "BarChart",
+                  "props": {
+                    "title": "Quarterly revenue",
+                    "description": "FY24 — USD thousands",
+                    "data": [
+                      { "label": "Q1", "value": 820 },
+                      { "label": "Q2", "value": 940 },
+                      { "label": "Q3", "value": 1080 },
+                      { "label": "Q4", "value": 1240 }
+                    ]
+                  }
+                }
+              ],
+              "data": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "_comment": "render_a2ui — status-report pill. Emits a Card root containing three StatusBadge children (API/database/workers) so the probe sees declarative-card + declarative-status-badge.",
+      "match": {
+        "userMessage": "status report on system health",
+        "toolName": "render_a2ui"
+      },
+      "response": {
+        "toolCalls": [
+          {
+            "name": "render_a2ui",
+            "arguments": {
+              "surfaceId": "declarative-surface",
+              "catalogId": "declarative-gen-ui-catalog",
+              "components": [
+                {
+                  "id": "root",
+                  "type": "Card",
+                  "props": {
+                    "title": "System health",
+                    "subtitle": "All services",
+                    "child": "status-api"
+                  }
+                },
+                {
+                  "id": "status-api",
+                  "type": "StatusBadge",
+                  "props": { "text": "API: healthy", "variant": "success" }
+                },
+                {
+                  "id": "status-db",
+                  "type": "StatusBadge",
+                  "props": { "text": "Database: healthy", "variant": "success" }
+                },
+                {
+                  "id": "status-workers",
+                  "type": "StatusBadge",
+                  "props": { "text": "Workers: degraded", "variant": "warning" }
+                }
+              ],
+              "data": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "_comment": "render_a2ui — fallback for any unmatched pill. Emits the original Card+Metric so unforeseen pills still render something deterministic instead of erroring.",
       "match": {
         "toolName": "render_a2ui"
       },
