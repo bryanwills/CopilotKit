@@ -1,16 +1,30 @@
 {
-  "_comment": "D5 fixture for /demos/open-gen-ui and /demos/open-gen-ui-advanced. Multi-turn for the advanced flow; first turn covers basic open-shape, second covers an advanced multi-step flow. Substrings 'render an open gen-ui element' and 'continue the advanced gen-ui flow' are unique.",
+  "_comment": "D5 fixture for /demos/open-gen-ui (and /demos/open-gen-ui-advanced). The agent calls the `generateSandboxedUi` frontend tool with an HTML+JS payload that the renderer materializes inside an iframe[srcdoc]. The fixture's HTML is intentionally minimal but ≥ 100 chars so the iframe-mount assertion passes against aimock.",
   "fixtures": [
+    {
+      "match": { "userMessage": "Visualize pitch, yaw, and roll" },
+      "response": {
+        "content": "Rendering the 3D axis visualization.",
+        "toolCalls": [
+          {
+            "name": "generateSandboxedUi",
+            "arguments": {
+              "html": "<!doctype html><html><head><title>Axes</title></head><body><h1>Pitch / Yaw / Roll</h1><svg viewBox=\"0 0 100 100\"><line x1=\"10\" y1=\"50\" x2=\"90\" y2=\"50\" stroke=\"red\"/><line x1=\"50\" y1=\"10\" x2=\"50\" y2=\"90\" stroke=\"green\"/></svg></body></html>"
+            }
+          }
+        ]
+      }
+    },
     {
       "match": { "userMessage": "render an open gen-ui element" },
       "response": {
-        "content": "The open gen-UI element was rendered. The LLM produced an arbitrary-shape JSON payload and the renderer materialized it as a UI block."
+        "content": "The open gen-UI element was rendered."
       }
     },
     {
       "match": { "userMessage": "continue the advanced gen-ui flow" },
       "response": {
-        "content": "The advanced gen-UI flow continued with the second-step component. The chained payloads from turns 1 and 2 form the complete advanced gen-UI sequence."
+        "content": "The advanced gen-UI flow continued with the second-step component."
       }
     }
   ]

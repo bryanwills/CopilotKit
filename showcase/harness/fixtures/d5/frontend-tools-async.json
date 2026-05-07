@@ -1,10 +1,27 @@
 {
-  "_comment": "D5 fixture for /demos/frontend-tools-async. Triggers an async frontend tool that returns its result asynchronously; the agent waits for it before producing the final reply. Substring 'fetch the async metric' is unique.",
+  "_comment": "D5 fixture for /demos/frontend-tools-async. The pill prompt 'Find my notes about project planning.' triggers the async `query_notes` frontend tool. The fixture emits a tool call; the in-browser handler resolves it (NOTES_DB lookup) and the agent paints the resulting NotesCard. Substring 'project planning' is unique to this pill.",
   "fixtures": [
     {
-      "match": { "userMessage": "fetch the async metric" },
+      "match": { "userMessage": "project planning" },
       "response": {
-        "content": "The async tool resolved with the requested metric. The frontend handler awaited completion before forwarding the result back to the agent — async-streaming behavior confirmed."
+        "content": "I searched your notes and found a few results.",
+        "toolCalls": [
+          {
+            "name": "query_notes",
+            "arguments": {
+              "keyword": "project planning"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "project planning",
+        "hasToolResult": true
+      },
+      "response": {
+        "content": "Here are the matching notes from your local DB."
       }
     }
   ]
