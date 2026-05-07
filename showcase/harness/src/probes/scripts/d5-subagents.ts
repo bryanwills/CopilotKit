@@ -69,6 +69,11 @@ export const USER_PROMPT =
 const BOILERPLATE_MARKERS = [
   "no messages yet",
   "start a conversation",
+  // Sentinel emitted by `_invoke_sub_agent` in
+  // `showcase/integrations/langgraph-python/src/agents/subagents.py`
+  // when a sub-agent produces no usable text. Lower-cased to match the
+  // probe's `text.toLowerCase()` snapshot.
+  "<sub-agent produced no output>",
 ] as const;
 
 /** Total time we'll poll for the chain to complete, in ms. The chain
@@ -76,6 +81,13 @@ const BOILERPLATE_MARKERS = [
  *  React render of all three cards takes a non-trivial moment. */
 const CHAIN_POLL_TIMEOUT_MS = 30_000;
 const CHAIN_POLL_INTERVAL_MS = 500;
+
+/** After all three cards are present and the validator passes, we hold
+ *  for this dwell window and re-snapshot. This catches a regression
+ *  where the supervisor briefly shows a single critic card before a
+ *  loop fires — without the dwell, the probe would return at the first
+ *  passing snapshot and miss the second critic appearing. */
+export const CHAIN_SETTLE_DWELL_MS = 3_000;
 
 /** Snapshot read off the page in a single `page.evaluate` round-trip.
  *  Carries everything the assertion needs so we don't make N
@@ -167,6 +179,7 @@ export function validateSubagentsSnapshot(
 export async function assertSubagentsChain(
   page: Page,
   timeoutMs: number = CHAIN_POLL_TIMEOUT_MS,
+  dwellMs: number = CHAIN_SETTLE_DWELL_MS,
 ): Promise<void> {
   const deadline = Date.now() + timeoutMs;
   let lastError: string | null = null;
@@ -176,9 +189,27 @@ export async function assertSubagentsChain(
     pollCount++;
     lastError = validateSubagentsSnapshot(snap);
     if (lastError === null) {
-      console.debug("[d5-subagents] all sub-assertions passed", {
-        counts: snap.counts,
+      // First passing snapshot — hold for `dwellMs` and re-snapshot
+      // before declaring victory. This catches a regression where the
+      // critic renders briefly with count=1 and then the supervisor
+      // re-invokes it (count grows to 2). Without the dwell, the
+      // probe would return at the first passing snapshot and miss the
+      // second critic appearing.
+      const initialCounts = { ...snap.counts };
+      await new Promise<void>((r) => setTimeout(r, dwellMs));
+      const recheck = await probeSubagents(page);
+      const recheckError = validateSubagentsSnapshot(recheck);
+      if (recheckError !== null) {
+        throw new Error(
+          `subagents: chain destabilised during ${dwellMs}ms dwell after passing — ${recheckError} ` +
+            `(initial counts=${JSON.stringify(initialCounts)}, ` +
+            `recheck counts=${JSON.stringify(recheck.counts)})`,
+        );
+      }
+      console.debug("[d5-subagents] all sub-assertions passed (post-dwell)", {
+        counts: recheck.counts,
         pollCount,
+        dwellMs,
       });
       return;
     }
