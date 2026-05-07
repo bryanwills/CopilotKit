@@ -51,6 +51,21 @@ describe("D5 mcp-apps script — buildTurns", () => {
     expect(turns).toHaveLength(1);
     expect(typeof turns[0]!.assertions).toBe("function");
   });
+
+  it("drives a real MCP-tool prompt (not the previous 'hello' no-op)", () => {
+    const ctx: D5BuildContext = {
+      integrationSlug: "langgraph-python",
+      featureType: "mcp-apps",
+      baseUrl: "https://showcase-langgraph-python.example.com",
+    };
+    const turns = scriptModule.buildTurns(ctx);
+    // Verbatim pill prompt from
+    // `langgraph-python/src/app/demos/mcp-apps/suggestions.ts`.
+    expect(turns[0]!.input).toBe(
+      "Open Excalidraw and sketch a system diagram with a client, server, and database.",
+    );
+    expect(turns[0]!.input).not.toBe("hello");
+  });
 });
 
 describe("D5 mcp-apps assertIframePresent", () => {

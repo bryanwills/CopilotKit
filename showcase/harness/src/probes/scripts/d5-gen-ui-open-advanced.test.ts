@@ -44,7 +44,7 @@ describe("D5 gen-ui-open-advanced — buildTurns", () => {
     }
   });
 
-  it("returns one turn driving the advanced sandbox prompt", () => {
+  it("returns one turn driving a fixture-keyed advanced sandbox prompt", () => {
     const ctx: D5BuildContext = {
       integrationSlug: "langgraph-python",
       featureType: "gen-ui-open-advanced",
@@ -52,7 +52,10 @@ describe("D5 gen-ui-open-advanced — buildTurns", () => {
     };
     const turns = scriptModule.buildTurns(ctx);
     expect(turns).toHaveLength(1);
-    expect(turns[0]!.input).toBe("render the advanced gen-ui sandbox");
+    // Verbatim pill prompt from `open-gen-ui-advanced/suggestions.ts`,
+    // keyed in `d5-all.json` to a deterministic generateSandboxedUi
+    // tool call.
+    expect(turns[0]!.input).toBe("Inline expression evaluator");
     expect(typeof turns[0]!.assertions).toBe("function");
   });
 });
@@ -75,9 +78,9 @@ describe("D5 gen-ui-open-advanced — assertAdvancedIframe", () => {
     await expect(mod.assertAdvancedIframe(page, 50)).resolves.toBeUndefined();
   });
 
-  it("passes on the generic iframe fallback", async () => {
+  it("passes on the sandbox-iframe fallback", async () => {
     const mod = await import("./d5-gen-ui-open-advanced.js");
-    const page = makePageReturning("iframe");
+    const page = makePageReturning('iframe[sandbox*="allow-scripts"]');
     await expect(mod.assertAdvancedIframe(page, 50)).resolves.toBeUndefined();
   });
 
@@ -91,11 +94,20 @@ describe("D5 gen-ui-open-advanced — assertAdvancedIframe", () => {
 });
 
 describe("D5 gen-ui-open-advanced — exported selector cascade", () => {
-  it("orders canonical testid first, generic iframe fallback second", async () => {
+  it("orders canonical testid first, sandbox-iframe fallback second", async () => {
     const mod = await import("./d5-gen-ui-open-advanced.js");
     expect(mod.ADVANCED_IFRAME_SELECTORS[0]).toBe(
       '[data-testid="gen-ui-open-advanced-iframe"]',
     );
-    expect(mod.ADVANCED_IFRAME_SELECTORS[1]).toBe("iframe");
+    expect(mod.ADVANCED_IFRAME_SELECTORS[1]).toBe(
+      'iframe[sandbox*="allow-scripts"]',
+    );
+  });
+
+  it("does not include the bare iframe selector (would over-match)", async () => {
+    const mod = await import("./d5-gen-ui-open-advanced.js");
+    expect(
+      (mod.ADVANCED_IFRAME_SELECTORS as readonly string[]).includes("iframe"),
+    ).toBe(false);
   });
 });
