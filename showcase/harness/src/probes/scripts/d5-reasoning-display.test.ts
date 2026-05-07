@@ -23,18 +23,18 @@ describe("d5-reasoning-display script", () => {
     expect(buildTurns(ctx)[0]!.input).toBe("show your reasoning step by step");
   });
 
-  it("preNavigateRoute defaults to /demos/agentic-chat-reasoning", () => {
+  it("preNavigateRoute defaults to /demos/reasoning-custom", () => {
     expect(preNavigateRoute("reasoning-display")).toBe(
-      "/demos/agentic-chat-reasoning",
+      "/demos/reasoning-custom",
     );
   });
 
-  it("preNavigateRoute prefers reasoning-default-render when only that demo is declared", () => {
+  it("preNavigateRoute prefers reasoning-default when only that demo is declared", () => {
     expect(
       preNavigateRoute("reasoning-display", {
-        demos: ["reasoning-default-render"],
+        demos: ["reasoning-default"],
       }),
-    ).toBe("/demos/reasoning-default-render");
+    ).toBe("/demos/reasoning-default");
   });
 
   it("REASONING_KEYWORDS includes 'reasoning'", () => {

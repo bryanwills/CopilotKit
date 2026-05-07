@@ -956,13 +956,13 @@ describe("POST /api/probes/:id/trigger — B2 featureTypes validation", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        filter: { featureTypes: ["hitl-steps"] },
+        filter: { featureTypes: ["hitl-text-input"] },
       }),
     });
     expect(res.status).toBe(200);
     // Verify featureTypes is threaded through to scheduler.trigger opts
     expect(sched.lastTriggerOpts).toEqual({
-      filter: { featureTypes: ["hitl-steps"] },
+      filter: { featureTypes: ["hitl-text-input"] },
     });
   });
 

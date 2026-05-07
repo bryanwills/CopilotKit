@@ -90,7 +90,10 @@ const REGISTRY_TO_D5: Readonly<Record<string, readonly D5FeatureType[]>> = {
   // skipped by `demosToFeatureTypes`).
   "hitl-in-chat": ["hitl-text-input"],
   "hitl-in-chat-booking": ["hitl-text-input"],
-  hitl: ["hitl-steps"],
+  // `hitl` is used by ag2 / agno / built-in-agent / others as an alias of
+  // hitl-in-chat. Repointed to `hitl-text-input` after `d5-hitl-steps.ts`
+  // was removed in the genuine-pass Phase 0 cleanup.
+  hitl: ["hitl-text-input"],
 
   // hitl (approve/deny tier) — out-of-chat modal approval flow.
   "hitl-in-app": ["hitl-approve-deny"],
@@ -143,12 +146,11 @@ const REGISTRY_TO_D5: Readonly<Record<string, readonly D5FeatureType[]>> = {
   "frontend-tools-async": ["frontend-tools-async"],
 
   // Reasoning family — single `reasoning-display` literal covers both
-  // demo routes via preNavigateRoute. tool-rendering-reasoning-chain is
-  // split because its assertion shape interleaves tool render with
-  // reasoning block.
-  "agentic-chat-reasoning": ["reasoning-display"],
-  "reasoning-default-render": ["reasoning-display"],
-  "tool-rendering-reasoning-chain": ["tool-rendering-reasoning-chain"],
+  // demo routes via preNavigateRoute. The `tool-rendering-reasoning-chain`
+  // demo was removed in the LGP demo-pass; its mapping entry and probe
+  // script were deleted in the genuine-pass Phase 0 cleanup.
+  "reasoning-custom": ["reasoning-display"],
+  "reasoning-default": ["reasoning-display"],
 
   // State family — `shared-state-read` registry feature reuses the
   // existing `shared-state-read` D5 literal (already paired with
@@ -168,9 +170,9 @@ const REGISTRY_TO_D5: Readonly<Record<string, readonly D5FeatureType[]>> = {
   "gen-ui-agent": ["gen-ui-agent"],
 
   // Interrupt family — LangGraph interrupt-driven HITL, distinct from
-  // useHumanInTheLoop hook patterns. Two demos = two literals (one
-  // headless, one gen-UI yielding interrupt).
-  "interrupt-headless": ["interrupt-headless"],
+  // useHumanInTheLoop hook patterns. The `interrupt-headless` demo was
+  // removed in the LGP demo-pass; its mapping entry and probe script
+  // were deleted in the genuine-pass Phase 0 cleanup.
   "gen-ui-interrupt": ["gen-ui-interrupt"],
 
   // BYOC family — single literal covers hashbrown + json-render via

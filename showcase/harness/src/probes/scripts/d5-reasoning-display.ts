@@ -1,13 +1,17 @@
 /**
  * D5 — reasoning-display script.
  *
- * Covers BOTH `/demos/agentic-chat-reasoning` and
- * `/demos/reasoning-default-render` via preNavigateRoute. The driver
- * runs one feature per featureType per integration, so the registered
- * type ('reasoning-display') gets one run regardless of how many
- * registry IDs map to it. The default route is `agentic-chat-reasoning`
- * — the alternate route is informational only at the catalog level
- * (see open question Q5 in `.claude/specs/lgp-d5-coverage.md`).
+ * Covers BOTH `/demos/reasoning-custom` and `/demos/reasoning-default`
+ * via preNavigateRoute. The driver runs one feature per featureType per
+ * integration, so the registered type ('reasoning-display') gets one run
+ * regardless of how many registry IDs map to it. The default route is
+ * `reasoning-custom` — the alternate route is informational only at the
+ * catalog level (see open question Q5 in `.claude/specs/lgp-d5-coverage.md`).
+ *
+ * NOTE: in the LGP demo-pass these routes were renamed from
+ * `agentic-chat-reasoning` → `reasoning-custom` and
+ * `reasoning-default-render` → `reasoning-default`; the genuine-pass Phase 0
+ * cleanup updates the mapping and this branch logic accordingly.
  *
  * Assertion (either signal passes):
  *   - A reasoning-role message rendered via a known testid
@@ -121,21 +125,21 @@ export function buildTurns(_ctx: D5BuildContext): ConversationTurn[] {
 }
 
 /** Force the route to a real demo path. Default `/demos/reasoning-display`
- *  doesn't exist; we pick `agentic-chat-reasoning` as the canonical
- *  reasoning surface. Per Q5 in the coverage doc this may split later. */
+ *  doesn't exist; we pick `reasoning-custom` as the canonical reasoning
+ *  surface. Per Q5 in the coverage doc this may split later. */
 export function preNavigateRoute(
   _ft: D5FeatureType,
   ctx?: D5RouteContext,
 ): string {
-  // If the integration declares only `reasoning-default-render`, prefer that route.
+  // If the integration declares only `reasoning-default`, prefer that route.
   if (
     ctx?.demos &&
-    ctx.demos.includes("reasoning-default-render") &&
-    !ctx.demos.includes("agentic-chat-reasoning")
+    ctx.demos.includes("reasoning-default") &&
+    !ctx.demos.includes("reasoning-custom")
   ) {
-    return "/demos/reasoning-default-render";
+    return "/demos/reasoning-default";
   }
-  return "/demos/agentic-chat-reasoning";
+  return "/demos/reasoning-custom";
 }
 
 registerD5Script({
