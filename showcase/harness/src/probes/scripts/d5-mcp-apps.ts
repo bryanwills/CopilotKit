@@ -106,24 +106,37 @@ export async function assertIframePresent(
 }
 
 /**
- * Build the per-(integration, featureType) conversation. The MCP-apps
- * surface has no chat-driven assertion — the value of the surface is
- * the iframe shell itself — so we send a single empty-input turn whose
- * sole job is to run `assertIframePresent` against the rendered page.
+ * Build the per-(integration, featureType) conversation.
  *
- * The runner's chat-input cascade resolves on the demo page even
- * though we don't intend to send a real message; pressing Enter on an
- * empty composer is a no-op for these surfaces. The assertion runs
- * after the runner's settle window.
+ * The MCP-apps demo only mounts an iframe AFTER the agent calls a real
+ * MCP tool that returns a UI resource — `MCPAppsActivityRenderer`
+ * subscribes to a runtime activity event, fetches the resource, and
+ * dynamically appends a sandboxed iframe with
+ * `sandbox="allow-scripts allow-same-origin allow-forms"`. So the
+ * input MUST be a prompt that drives a real MCP tool call against the
+ * configured server (e.g. the public Excalidraw MCP at
+ * https://mcp.excalidraw.com).
  *
- * NOTE: this differs from the chat-style probes (e.g. tool-rendering)
- * which drive a real prompt. The MCP-apps demo deliberately exposes
- * no chat surface beyond what the iframe sandbox renders.
+ * We send the verbatim pill prompt from
+ * `langgraph-python/src/app/demos/mcp-apps/suggestions.ts` so the
+ * probe matches what a user clicking the suggestion pill would
+ * experience.
+ *
+ * TODO(F4): `showcase/aimock/d5-all.json` currently keys
+ * `"Use Excalidraw to sketch"` to a CONTENT-ONLY response (no MCP tool
+ * call), and a generic catch-all may absorb the verbatim pill string
+ * before it reaches the MCP path. Without a fixture entry that emits
+ * an actual MCP tool call AND a runtime configured to talk to a real
+ * MCP server, the iframe assertion can only pass on integration runs
+ * with a live agent + reachable MCP endpoint. F4 owns the fixture
+ * file; this probe is correct in the live-agent topology and is a
+ * known false-negative under aimock until the fixture lands.
  */
 export function buildTurns(_ctx: D5BuildContext): ConversationTurn[] {
   return [
     {
-      input: "hello",
+      input:
+        "Open Excalidraw and sketch a system diagram with a client, server, and database.",
       assertions: assertIframePresent,
     },
   ];
