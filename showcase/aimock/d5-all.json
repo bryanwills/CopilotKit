@@ -2,12 +2,12 @@
   "_comment": "Bundled D5 (e2e-deep) fixtures. Source files: showcase/harness/fixtures/d5/*.json (auto-merged). Uses hasToolResult matching for multi-turn disambiguation. Loaded by aimock before feature-parity.json for match precedence. The first 7 entries below are the open-gen-ui (4) and open-gen-ui-advanced (3) pill fixtures — they emit deterministic generateSandboxedUi tool calls and intentionally appear before everything else so they win first-match-wins ordering against the showcase-assistant 'hi' catch-all in feature-parity.json. Verbatim pill messages are owned by langgraph-python/src/app/demos/open-gen-ui/suggestions.ts and open-gen-ui-advanced/suggestions.ts. Source-of-truth: showcase/harness/fixtures/d5/gen-ui-open.json.",
   "fixtures": [
     {
-      "_comment": "headless-simple pill 1: locks the deterministic greeting leading phrase.",
+      "_comment": "headless-simple pill 1: locks the deterministic greeting leading phrase. The reply is intentionally NON-boilerplate (i.e. NOT the showcase-assistant catch-all 'I can help you with weather lookups...') so the headless-simple spec's HELLO_LEADING assertion fails when fixture priority misroutes this prompt to the catch-all.",
       "match": {
         "userMessage": "Say hello in one short sentence"
       },
       "response": {
-        "content": "Hello! I can help you with weather lookups, creating pie and bar charts, scheduling meetings, looking up flights, and toggling the theme. What would you like to try?"
+        "content": "Hi! In one short sentence: I'm a CopilotKit demo agent here to help you try features."
       }
     },
     {
@@ -174,7 +174,7 @@
           {
             "id": "call_tr_stock_aapl_001",
             "name": "get_stock_price",
-            "arguments": "{\"ticker\":\"AAPL\"}"
+            "arguments": "{\"ticker\":\"AAPL\",\"price_usd\":338.37,\"change_pct\":-2.96}"
           }
         ]
       }

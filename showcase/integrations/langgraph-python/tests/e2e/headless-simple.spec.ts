@@ -20,8 +20,15 @@ const PILL_HELLO = "Say hello in one short sentence.";
 const PILL_JOKE = "Tell me a one-line joke.";
 const PILL_FACT = "Give me a fun fact.";
 
+// Intentionally NOT the showcase-assistant catch-all phrase ("Hello! I can
+// help you with weather lookups, creating pie and bar charts...") — that
+// boilerplate is what other tests in this PR explicitly guard AGAINST.
+// The dedicated d5-all.json fixture for "Say hello in one short sentence"
+// returns the leading phrase below; if fixture priority ever misroutes
+// this prompt to the catch-all, this assertion will fail with a clear
+// "expected non-boilerplate greeting" diff.
 const HELLO_LEADING =
-  "Hello! I can help you with weather lookups, creating pie and bar charts";
+  "Hi! In one short sentence: I'm a CopilotKit demo agent";
 const JOKE_LEADING =
   "Why did the scarecrow win an award? Because he was outstanding in his field!";
 const FACT_LEADING = "A fun fact: Honey never spoils!";
