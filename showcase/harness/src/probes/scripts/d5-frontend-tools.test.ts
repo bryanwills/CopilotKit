@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { getD5Script, type D5BuildContext } from "../helpers/d5-registry.js";
 import type { Page } from "../helpers/conversation-runner.js";
 import {
@@ -69,15 +69,36 @@ describe("d5-frontend-tools script", () => {
   });
 
   it("assertion fails when background did not change off baseline", async () => {
+    // Drive `waitForBackgroundChange`'s polling loop forward with
+    // fake timers so the FIRST_SIGNAL_TIMEOUT_MS deadline expires
+    // synchronously inside the test instead of taking the real 60s.
+    vi.useFakeTimers();
+    try {
+      const baseline = { current: "#4f46e5" };
+      const assert = buildPillAssertion("sunset", baseline);
+      // Page always reports the baseline — the assertion should
+      // time out and throw a "did not change off baseline" error.
+      const page = makePage(["#4f46e5"]);
+      const promise = assert(page);
+      // Attach the rejection assertion BEFORE advancing timers so
+      // unhandled-rejection warnings don't fire while the loop spins.
+      const expectation = expect(promise).rejects.toThrow(
+        /did not change off baseline/,
+      );
+      // Fast-forward past the FIRST_SIGNAL_TIMEOUT_MS deadline.
+      await vi.advanceTimersByTimeAsync(70_000);
+      await expectation;
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("assertion fails when background changes to a wrong-family gradient", async () => {
     const baseline = { current: "#4f46e5" };
     const assert = buildPillAssertion("sunset", baseline);
-    // Always returns the baseline — should time out / throw.
-    const page = makePage(["#4f46e5"]);
-    // Use a tiny effective timeout by checking the hint match path is
-    // unreachable without a change. Slow tests are acceptable here.
-    // Instead, simulate the "changed but wrong family" path.
-    const page2 = makePage(["#0a3d2e green gradient"]);
-    await expect(assert(page2)).rejects.toThrow(/sunset hint/);
-    void page;
+    // Sunset pill but the page reports a green/forest-flavored
+    // gradient — should throw a "sunset hint" error.
+    const page = makePage(["#0a3d2e green gradient"]);
+    await expect(assert(page)).rejects.toThrow(/sunset hint/);
   });
 });
