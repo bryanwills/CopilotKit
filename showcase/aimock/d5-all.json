@@ -1,5 +1,5 @@
 {
-  "_comment": "Bundled D5 (e2e-deep) fixtures. Source files: showcase/harness/fixtures/d5/*.json (auto-merged). Uses hasToolResult matching for multi-turn disambiguation. Loaded by aimock before feature-parity.json for match precedence. The first 7 entries below are the open-gen-ui (4) and open-gen-ui-advanced (3) pill fixtures — they emit deterministic generateSandboxedUi tool calls and intentionally appear before everything else so they win first-match-wins ordering against the showcase-assistant 'hi' catch-all in feature-parity.json. Verbatim pill messages are owned by langgraph-python/src/app/demos/open-gen-ui/suggestions.ts and open-gen-ui-advanced/suggestions.ts. Source-of-truth: showcase/harness/fixtures/d5/gen-ui-open.json.",
+  "_comment": "Bundled D5 (e2e-deep) fixtures. Source files: showcase/harness/fixtures/d5/*.json (auto-merged). Uses hasToolResult matching for multi-turn disambiguation. Loaded by aimock before feature-parity.json for match precedence. Ordering convention: high-priority verbatim-prompt fixtures appear first so they win first-match-wins ordering against the showcase-assistant 'hi' catch-all in feature-parity.json (and against any later, broader substring matchers in this file). The exact set of high-priority entries shifts as features land — do not rely on a specific position for any group; rely on the per-fixture _comment headers and the source-of-truth note on each per-feature file under showcase/harness/fixtures/d5/.",
   "fixtures": [
     {
       "_comment": "headless-simple pill 1: locks the deterministic greeting leading phrase.",
@@ -1576,7 +1576,7 @@
     },
     {
       "match": {
-        "userMessage": "navy"
+        "userMessage": "navy → magenta cosmic gradient"
       },
       "response": {
         "content": "Cosmic gradient applied — navy fading to magenta.",
