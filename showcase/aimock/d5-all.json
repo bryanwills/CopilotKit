@@ -750,7 +750,8 @@
       "_comment": "Subagents pill 1 — 'Write a blog post' / cold exposure training. Drives supervisor → research_agent → writing_agent → critique_agent → final reply, plus three nested sub-agent turns.",
       "match": {
         "userMessage": "Produce a short blog post about the benefits of cold exposure training",
-        "hasToolResult": false
+        "hasToolResult": false,
+        "toolName": "research_agent"
       },
       "response": {
         "toolCalls": [
@@ -774,7 +775,8 @@
     {
       "match": {
         "userMessage": "Produce a short blog post about the benefits of cold exposure training",
-        "turnIndex": 1
+        "turnIndex": 1,
+        "toolName": "writing_agent"
       },
       "response": {
         "toolCalls": [
@@ -798,7 +800,8 @@
     {
       "match": {
         "userMessage": "Produce a short blog post about the benefits of cold exposure training",
-        "turnIndex": 2
+        "turnIndex": 2,
+        "toolName": "critique_agent"
       },
       "response": {
         "toolCalls": [
@@ -832,7 +835,8 @@
       "_comment": "Subagents pill 2 — 'Explain a topic' / LLM tool calling.",
       "match": {
         "userMessage": "Explain how large language models handle tool calling",
-        "hasToolResult": false
+        "hasToolResult": false,
+        "toolName": "research_agent"
       },
       "response": {
         "toolCalls": [
@@ -856,7 +860,8 @@
     {
       "match": {
         "userMessage": "Explain how large language models handle tool calling",
-        "turnIndex": 1
+        "turnIndex": 1,
+        "toolName": "writing_agent"
       },
       "response": {
         "toolCalls": [
@@ -880,7 +885,8 @@
     {
       "match": {
         "userMessage": "Explain how large language models handle tool calling",
-        "turnIndex": 2
+        "turnIndex": 2,
+        "toolName": "critique_agent"
       },
       "response": {
         "toolCalls": [
@@ -914,7 +920,8 @@
       "_comment": "Subagents pill 3 — 'Summarize a topic' / reusable rockets. Note: the original Railway-side bug for this pill was the concurrent-update on `delegations`; the agent state reducer fix unblocks this fixture chain.",
       "match": {
         "userMessage": "Summarize the current state of reusable rockets",
-        "hasToolResult": false
+        "hasToolResult": false,
+        "toolName": "research_agent"
       },
       "response": {
         "toolCalls": [
@@ -938,7 +945,8 @@
     {
       "match": {
         "userMessage": "Summarize the current state of reusable rockets",
-        "turnIndex": 1
+        "turnIndex": 1,
+        "toolName": "writing_agent"
       },
       "response": {
         "toolCalls": [
@@ -962,7 +970,8 @@
     {
       "match": {
         "userMessage": "Summarize the current state of reusable rockets",
-        "turnIndex": 2
+        "turnIndex": 2,
+        "toolName": "critique_agent"
       },
       "response": {
         "toolCalls": [
@@ -1704,7 +1713,8 @@
     },
     {
       "match": {
-        "userMessage": "KPI dashboard"
+        "userMessage": "KPI dashboard",
+        "toolName": "generate_a2ui"
       },
       "response": {
         "content": "Here is the KPI dashboard you requested.",
@@ -1718,7 +1728,8 @@
     },
     {
       "match": {
-        "userMessage": "pie chart of sales by region"
+        "userMessage": "pie chart of sales by region",
+        "toolName": "generate_a2ui"
       },
       "response": {
         "content": "Here is the pie chart by region.",
@@ -1732,7 +1743,8 @@
     },
     {
       "match": {
-        "userMessage": "bar chart of quarterly revenue"
+        "userMessage": "bar chart of quarterly revenue",
+        "toolName": "generate_a2ui"
       },
       "response": {
         "content": "Here is the bar chart of quarterly revenue.",
@@ -1746,7 +1758,8 @@
     },
     {
       "match": {
-        "userMessage": "status report on system health"
+        "userMessage": "status report on system health",
+        "toolName": "generate_a2ui"
       },
       "response": {
         "content": "Here is the system health status report.",
@@ -1970,7 +1983,8 @@
     },
     {
       "match": {
-        "userMessage": "SFO to JFK"
+        "userMessage": "SFO to JFK",
+        "toolName": "display_flight"
       },
       "response": {
         "content": "Here is the SFO to JFK flight on United.",
@@ -1989,7 +2003,8 @@
     },
     {
       "match": {
-        "userMessage": "intro call with the sales team"
+        "userMessage": "intro call with the sales team",
+        "toolName": "schedule_meeting"
       },
       "response": {
         "content": "Sure — let me check available times.",
@@ -2016,7 +2031,8 @@
     },
     {
       "match": {
-        "userMessage": "1:1 with Alice"
+        "userMessage": "1:1 with Alice",
+        "toolName": "schedule_meeting"
       },
       "response": {
         "content": "Got it — pulling up next-week slots.",
@@ -2043,23 +2059,8 @@
     },
     {
       "match": {
-        "userMessage": "Visualize pitch, yaw, and roll"
-      },
-      "response": {
-        "content": "Rendering the 3D axis visualization.",
-        "toolCalls": [
-          {
-            "name": "generateSandboxedUi",
-            "arguments": {
-              "html": "<!doctype html><html><head><title>Axes</title></head><body><h1>Pitch / Yaw / Roll</h1><svg viewBox=\"0 0 100 100\"><line x1=\"10\" y1=\"50\" x2=\"90\" y2=\"50\" stroke=\"red\"/><line x1=\"50\" y1=\"10\" x2=\"50\" y2=\"90\" stroke=\"green\"/></svg></body></html>"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "match": {
-        "userMessage": "poem about autumn leaves"
+        "userMessage": "poem about autumn leaves",
+        "toolName": "write_document"
       },
       "response": {
         "content": "Streaming the poem now.",
@@ -2075,7 +2076,8 @@
     },
     {
       "match": {
-        "userMessage": "polite email declining"
+        "userMessage": "polite email declining",
+        "toolName": "write_document"
       },
       "response": {
         "content": "Drafting the email now.",
@@ -2091,7 +2093,8 @@
     },
     {
       "match": {
-        "userMessage": "quantum computing for a curious teenager"
+        "userMessage": "quantum computing for a curious teenager",
+        "toolName": "write_document"
       },
       "response": {
         "content": "Streaming the explainer now.",
