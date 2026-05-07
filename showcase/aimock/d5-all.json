@@ -1493,6 +1493,452 @@
       "response": {
         "content": "Since you recently viewed the pricing page and watched the product demo video, it might be a good idea to explore user testimonials or case studies to see how others have benefited from the Pro Plan. You could also start the 14-day free trial to experience the features firsthand."
       }
+    },
+    {
+      "match": {
+        "userMessage": "tone:professional"
+      },
+      "response": {
+        "content": "Greetings. I am operating in professional tone. I will provide measured, formal responses calibrated to your stated preferences and refrain from colloquialisms in my replies."
+      }
+    },
+    {
+      "match": {
+        "userMessage": "tone:casual"
+      },
+      "response": {
+        "content": "Hey! Casual mode here — I'll keep things friendly and easygoing. Just shoot me whatever you want to know and I'll riff on it without sounding like a press release."
+      }
+    },
+    {
+      "match": {
+        "userMessage": "expertise:beginner"
+      },
+      "response": {
+        "content": "Sure! Think of CopilotKit as a friendly toolkit. It helps you add an AI helper to your app. The helper can answer questions, run small tasks, and show buttons or charts when needed."
+      }
+    },
+    {
+      "match": {
+        "userMessage": "expertise:expert"
+      },
+      "response": {
+        "content": "CopilotKit composes a runtime adapter (Express/Hono) over the AG-UI SSE protocol; the React client wires hooks (useFrontendTool, useAgentContext) into a typed agent runner. The architecture front-runs round-trip latency by streaming TEXT_MESSAGE_CHUNK and TOOL_CALL events on the same channel."
+      }
+    },
+    {
+      "match": {
+        "userMessage": "responseLength:concise"
+      },
+      "response": {
+        "content": "Agent context is a typed payload sent each turn."
+      }
+    },
+    {
+      "match": {
+        "userMessage": "responseLength:detailed"
+      },
+      "response": {
+        "content": "Agent context is a typed payload published from the frontend on every turn through the useAgentContext hook. The payload is forwarded into the agent's runtime context (LangGraph 0.6 introduced the `context` channel as the supported relay for per-run frontend-supplied data; legacy `properties` flowed via `forwardedProps` and did not land in `RunnableConfig`). On the Python side, CopilotKitMiddleware reads the value off the runtime context, then routes it into the system-prompt builder so the model sees the user's tone, expertise, and length preferences before each call. The result is per-turn behavior change without a model swap."
+      }
+    },
+    {
+      "match": {
+        "userMessage": "Make the background a sunset gradient"
+      },
+      "response": {
+        "content": "Sunset gradient applied — warm orange-to-rose blend.",
+        "toolCalls": [
+          {
+            "name": "change_background",
+            "arguments": {
+              "background": "linear-gradient(135deg, #ff7e5f 0%, #feb47b 50%, #ff6b6b 100%)"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "deep green forest gradient"
+      },
+      "response": {
+        "content": "Forest gradient applied — deep green hues.",
+        "toolCalls": [
+          {
+            "name": "change_background",
+            "arguments": {
+              "background": "linear-gradient(135deg, #0a3d2e 0%, #166534 50%, #059669 100%)"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "navy"
+      },
+      "response": {
+        "content": "Cosmic gradient applied — navy fading to magenta.",
+        "toolCalls": [
+          {
+            "name": "change_background",
+            "arguments": {
+              "background": "linear-gradient(135deg, #1e3a8a 0%, #6b21a8 50%, #9333ea 100%)"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "project planning"
+      },
+      "response": {
+        "content": "I searched your notes and found a few results.",
+        "toolCalls": [
+          {
+            "name": "query_notes",
+            "arguments": {
+              "keyword": "project planning"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "Plan a product launch"
+      },
+      "response": {
+        "content": "Planned. Step 1 begins now.",
+        "toolCalls": [
+          {
+            "name": "set_steps",
+            "arguments": {
+              "steps": [
+                {
+                  "id": "launch-1",
+                  "title": "Define launch goals and audience",
+                  "status": "completed"
+                },
+                {
+                  "id": "launch-2",
+                  "title": "Coordinate marketing and PR rollout",
+                  "status": "completed"
+                },
+                {
+                  "id": "launch-3",
+                  "title": "Track post-launch metrics for week 1",
+                  "status": "completed"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "team offsite"
+      },
+      "response": {
+        "content": "Itinerary ready.",
+        "toolCalls": [
+          {
+            "name": "set_steps",
+            "arguments": {
+              "steps": [
+                {
+                  "id": "offsite-1",
+                  "title": "Reserve venue near downtown for 30 engineers",
+                  "status": "completed"
+                },
+                {
+                  "id": "offsite-2",
+                  "title": "Build day-by-day agenda with workshop slots",
+                  "status": "completed"
+                },
+                {
+                  "id": "offsite-3",
+                  "title": "Arrange travel, lodging and group meals",
+                  "status": "completed"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "Research our top competitor"
+      },
+      "response": {
+        "content": "Competitor brief assembled.",
+        "toolCalls": [
+          {
+            "name": "set_steps",
+            "arguments": {
+              "steps": [
+                {
+                  "id": "comp-1",
+                  "title": "Map competitor product surface and pricing tiers",
+                  "status": "completed"
+                },
+                {
+                  "id": "comp-2",
+                  "title": "Summarize their public differentiation themes",
+                  "status": "completed"
+                },
+                {
+                  "id": "comp-3",
+                  "title": "Identify weaknesses our positioning can exploit",
+                  "status": "completed"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "KPI dashboard"
+      },
+      "response": {
+        "content": "Here is the KPI dashboard you requested.",
+        "toolCalls": [
+          {
+            "name": "generate_a2ui",
+            "arguments": {}
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "pie chart of sales by region"
+      },
+      "response": {
+        "content": "Here is the pie chart by region.",
+        "toolCalls": [
+          {
+            "name": "generate_a2ui",
+            "arguments": {}
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "bar chart of quarterly revenue"
+      },
+      "response": {
+        "content": "Here is the bar chart of quarterly revenue.",
+        "toolCalls": [
+          {
+            "name": "generate_a2ui",
+            "arguments": {}
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "status report on system health"
+      },
+      "response": {
+        "content": "Here is the system health status report.",
+        "toolCalls": [
+          {
+            "name": "generate_a2ui",
+            "arguments": {}
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "toolName": "render_a2ui"
+      },
+      "response": {
+        "toolCalls": [
+          {
+            "name": "render_a2ui",
+            "arguments": {
+              "surfaceId": "declarative-surface",
+              "catalogId": "declarative-gen-ui-catalog",
+              "components": [
+                {
+                  "id": "root",
+                  "type": "Card",
+                  "props": {
+                    "title": "Declarative Demo",
+                    "subtitle": "Catalog primitives",
+                    "child": "metric-1"
+                  }
+                },
+                {
+                  "id": "metric-1",
+                  "type": "Metric",
+                  "props": {
+                    "label": "Revenue",
+                    "value": "$1.2M",
+                    "trend": "up"
+                  }
+                }
+              ],
+              "data": {}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "SFO to JFK"
+      },
+      "response": {
+        "content": "Here is the SFO to JFK flight on United.",
+        "toolCalls": [
+          {
+            "name": "display_flight",
+            "arguments": {
+              "origin": "SFO",
+              "destination": "JFK",
+              "airline": "United",
+              "price": "$289"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "intro call with the sales team"
+      },
+      "response": {
+        "content": "Sure — let me check available times.",
+        "toolCalls": [
+          {
+            "name": "schedule_meeting",
+            "arguments": {
+              "topic": "Sales intro call",
+              "attendee": "Sales team",
+              "slots": [
+                {
+                  "label": "Mon 10:00 AM",
+                  "iso": "2026-05-11T10:00:00Z"
+                },
+                {
+                  "label": "Tue 2:00 PM",
+                  "iso": "2026-05-12T14:00:00Z"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "1:1 with Alice"
+      },
+      "response": {
+        "content": "Got it — pulling up next-week slots.",
+        "toolCalls": [
+          {
+            "name": "schedule_meeting",
+            "arguments": {
+              "topic": "1:1 with Alice — Q2 goals",
+              "attendee": "Alice",
+              "slots": [
+                {
+                  "label": "Wed 11:00 AM",
+                  "iso": "2026-05-13T11:00:00Z"
+                },
+                {
+                  "label": "Thu 3:30 PM",
+                  "iso": "2026-05-14T15:30:00Z"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "Visualize pitch, yaw, and roll"
+      },
+      "response": {
+        "content": "Rendering the 3D axis visualization.",
+        "toolCalls": [
+          {
+            "name": "generateSandboxedUi",
+            "arguments": {
+              "html": "<!doctype html><html><head><title>Axes</title></head><body><h1>Pitch / Yaw / Roll</h1><svg viewBox=\"0 0 100 100\"><line x1=\"10\" y1=\"50\" x2=\"90\" y2=\"50\" stroke=\"red\"/><line x1=\"50\" y1=\"10\" x2=\"50\" y2=\"90\" stroke=\"green\"/></svg></body></html>"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "poem about autumn leaves"
+      },
+      "response": {
+        "content": "Streaming the poem now.",
+        "toolCalls": [
+          {
+            "name": "write_document",
+            "arguments": {
+              "content": "Crimson and amber in slow descent, / each leaf a quiet ledger of summer spent. / The wind, a courier with nothing to say, / files them gently into the morning's gray. / Somewhere a kettle hums, and afternoons grow brief — / autumn keeps its books in vermilion and gold leaf."
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "polite email declining"
+      },
+      "response": {
+        "content": "Drafting the email now.",
+        "toolCalls": [
+          {
+            "name": "write_document",
+            "arguments": {
+              "content": "Hi — thanks for sending the invite for Tuesday afternoon. Unfortunately I won't be able to make it this week. I'd love to find time later in the month if your schedule allows. In the meantime, feel free to send any pre-reads my way and I'll review them async so we don't lose momentum. Best, [name]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "quantum computing for a curious teenager"
+      },
+      "response": {
+        "content": "Streaming the explainer now.",
+        "toolCalls": [
+          {
+            "name": "write_document",
+            "arguments": {
+              "content": "A regular computer stores information in bits — tiny switches that are either on (1) or off (0). A quantum computer uses qubits, which can sit in a fuzzy superposition of both states at once until you check them. Stack many qubits together and they can explore lots of possibilities in parallel, which is why people are excited.\n\nThis doesn't make quantum computers faster at everything. They're great at problems with hidden structure — like factoring big numbers, simulating molecules, or searching certain databases — but useless for, say, opening Excel. Today's machines are noisy and small, so we mostly use them to test ideas rather than replace your laptop."
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": {
+        "userMessage": "What do you know about me from my context"
+      },
+      "response": {
+        "content": "Based on your context I can see your name and recent activity. I'll keep responses calibrated to your timezone."
+      }
     }
   ]
 }

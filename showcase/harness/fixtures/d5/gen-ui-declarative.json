@@ -1,10 +1,73 @@
 {
-  "_comment": "D5 fixture for /demos/declarative-gen-ui. Substring 'render the declarative card' is unique.",
+  "_comment": "D5 fixture for /demos/declarative-gen-ui. Four pill prompts (KPI dashboard / pie chart / bar chart / status report). Each produces a `generate_a2ui` tool call; the secondary LLM (also routed through aimock) returns an a2ui_operations container with the pill's expected catalog components. Under real LLM on Railway the secondary call produces richer payloads; the fixture variant here is the minimum that satisfies the per-pill testid assertions.",
   "fixtures": [
     {
-      "match": { "userMessage": "render the declarative card" },
+      "match": { "userMessage": "KPI dashboard" },
       "response": {
-        "content": "The declarative gen-UI specification has been resolved into a rendered card. The component descriptor was forwarded to the frontend renderer which materialized the card declaratively from the schema."
+        "content": "Here is the KPI dashboard you requested.",
+        "toolCalls": [
+          { "name": "generate_a2ui", "arguments": {} }
+        ]
+      }
+    },
+    {
+      "match": { "userMessage": "pie chart of sales by region" },
+      "response": {
+        "content": "Here is the pie chart by region.",
+        "toolCalls": [
+          { "name": "generate_a2ui", "arguments": {} }
+        ]
+      }
+    },
+    {
+      "match": { "userMessage": "bar chart of quarterly revenue" },
+      "response": {
+        "content": "Here is the bar chart of quarterly revenue.",
+        "toolCalls": [
+          { "name": "generate_a2ui", "arguments": {} }
+        ]
+      }
+    },
+    {
+      "match": { "userMessage": "status report on system health" },
+      "response": {
+        "content": "Here is the system health status report.",
+        "toolCalls": [
+          { "name": "generate_a2ui", "arguments": {} }
+        ]
+      }
+    },
+    {
+      "match": {
+        "toolName": "render_a2ui"
+      },
+      "response": {
+        "toolCalls": [
+          {
+            "name": "render_a2ui",
+            "arguments": {
+              "surfaceId": "declarative-surface",
+              "catalogId": "declarative-gen-ui-catalog",
+              "components": [
+                {
+                  "id": "root",
+                  "type": "Card",
+                  "props": {
+                    "title": "Declarative Demo",
+                    "subtitle": "Catalog primitives",
+                    "child": "metric-1"
+                  }
+                },
+                {
+                  "id": "metric-1",
+                  "type": "Metric",
+                  "props": { "label": "Revenue", "value": "$1.2M", "trend": "up" }
+                }
+              ],
+              "data": {}
+            }
+          }
+        ]
       }
     }
   ]

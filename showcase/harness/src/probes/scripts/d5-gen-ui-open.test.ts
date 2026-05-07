@@ -1,11 +1,24 @@
 import { describe, it, expect } from "vitest";
 import { getD5Script, type D5BuildContext } from "../helpers/d5-registry.js";
+import type { Page } from "../helpers/conversation-runner.js";
 import {
   buildTurns,
+  buildOpenGenUiAssertion,
   preNavigateRoute,
-  OPEN_KEYWORDS,
-  ADVANCED_KEYWORDS,
+  OPEN_GEN_UI_PILL_PROMPT_PREFIX,
+  OPEN_GEN_UI_MIN_SRCDOC_LENGTH,
 } from "./d5-gen-ui-open.js";
+
+function makePage(state: { iframeCount: number; longestSrcdoc: number }): Page {
+  return {
+    async waitForSelector() {},
+    async fill() {},
+    async press() {},
+    async evaluate<R>() {
+      return state as unknown as R;
+    },
+  };
+}
 
 describe("d5-gen-ui-open script", () => {
   it("registers under featureType 'gen-ui-open'", () => {
@@ -14,16 +27,15 @@ describe("d5-gen-ui-open script", () => {
     expect(script?.fixtureFile).toBe("gen-ui-open.json");
   });
 
-  it("buildTurns produces two turns covering basic + advanced", () => {
+  it("buildTurns sends the first suggestion-pill prompt", () => {
     const ctx: D5BuildContext = {
       integrationSlug: "x",
       featureType: "gen-ui-open",
       baseUrl: "https://x.test",
     };
-    const turns = buildTurns(ctx);
-    expect(turns).toHaveLength(2);
-    expect(turns[0]!.input).toBe("render an open gen-ui element");
-    expect(turns[1]!.input).toBe("continue the advanced gen-ui flow");
+    const turn = buildTurns(ctx)[0]!;
+    expect(turn.input).toBe(OPEN_GEN_UI_PILL_PROMPT_PREFIX);
+    expect(turn.responseTimeoutMs).toBeGreaterThanOrEqual(60_000);
   });
 
   it("preNavigateRoute always returns /demos/open-gen-ui (advanced moved to its own probe)", () => {
@@ -40,8 +52,24 @@ describe("d5-gen-ui-open script", () => {
     );
   });
 
-  it("OPEN_KEYWORDS and ADVANCED_KEYWORDS are populated", () => {
-    expect(OPEN_KEYWORDS.length).toBeGreaterThan(0);
-    expect(ADVANCED_KEYWORDS).toContain("advanced");
+  it("assertion succeeds when an iframe[srcdoc] mounts with non-trivial content", async () => {
+    const assertion = buildOpenGenUiAssertion({ timeoutMs: 100 });
+    const page = makePage({
+      iframeCount: 1,
+      longestSrcdoc: OPEN_GEN_UI_MIN_SRCDOC_LENGTH + 50,
+    });
+    await expect(assertion(page)).resolves.toBeUndefined();
+  });
+
+  it("assertion fails when no iframe mounts", async () => {
+    const assertion = buildOpenGenUiAssertion({ timeoutMs: 100 });
+    const page = makePage({ iframeCount: 0, longestSrcdoc: 0 });
+    await expect(assertion(page)).rejects.toThrow(/iframe/);
+  });
+
+  it("assertion fails when iframe mounts but srcdoc is trivial", async () => {
+    const assertion = buildOpenGenUiAssertion({ timeoutMs: 100 });
+    const page = makePage({ iframeCount: 1, longestSrcdoc: 10 });
+    await expect(assertion(page)).rejects.toThrow(/iframe/);
   });
 });
