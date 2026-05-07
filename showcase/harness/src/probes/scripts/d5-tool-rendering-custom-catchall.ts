@@ -10,9 +10,10 @@
  * for two DIFFERENT tool calls" — i.e. the wildcard truly catches all
  * tools, not just one.
  *
- * Custom-catchall testid contract (Phase-1E production code):
+ * Custom-catchall testid contract (Phase-1E production code, see
+ * `showcase/integrations/langgraph-python/src/app/demos/tool-rendering-custom-catchall/custom-catchall-renderer.tsx`):
  *   - the user-supplied component renders a wrapper carrying
- *     `[data-testid="custom-catchall-render"]` on every invocation,
+ *     `[data-testid="custom-wildcard-card"]` on every invocation,
  *     regardless of tool name.
  *   - the wrapper carries the tool name on `[data-tool-name="<name>"]`
  *     so the cross-tool snapshot can verify a SINGLE testid maps to
@@ -20,7 +21,7 @@
  *
  * The probe sends two distinct prompts in sequence (driving two
  * different tool calls) and asserts both render through the same
- * `custom-catchall-render` testid with distinct `data-tool-name`
+ * `custom-wildcard-card` testid with distinct `data-tool-name`
  * values. This is the "cross-test signature snapshot" called out in
  * Phase-2A.
  *
@@ -36,7 +37,7 @@ import {
 import type { ConversationTurn, Page } from "../helpers/conversation-runner.js";
 
 /** Testid the custom wildcard component renders for every tool call. */
-export const CUSTOM_CATCHALL_TESTID = "custom-catchall-render";
+export const CUSTOM_CATCHALL_TESTID = "custom-wildcard-card";
 
 /**
  * The two prompts we send. Each is paired with the expected tool name
@@ -49,7 +50,7 @@ export const CUSTOM_CATCHALL_TESTID = "custom-catchall-render";
  */
 export const PROMPT_TOOL_PAIRS = [
   { prompt: "weather in Tokyo", tool: "get_weather" },
-  { prompt: "AAPL stock price", tool: "get_stock_price" },
+  { prompt: "What's the current price of AAPL?", tool: "get_stock_price" },
 ] as const;
 
 const POLL_TIMEOUT_MS = 15_000;
@@ -62,7 +63,7 @@ const POLL_INTERVAL_MS = 250;
  * without re-reading the DOM per turn.
  */
 export interface CustomCatchallProbe {
-  /** Distinct tool names found on `[data-testid="custom-catchall-render"][data-tool-name=...]`. */
+  /** Distinct tool names found on `[data-testid="custom-wildcard-card"][data-tool-name=...]`. */
   toolNames: string[];
   /** Total number of custom-catchall containers in the DOM. */
   containerCount: number;
@@ -80,7 +81,7 @@ export async function probeCustomCatchall(
       };
     };
     const containers = win.document.querySelectorAll(
-      '[data-testid="custom-catchall-render"]',
+      '[data-testid="custom-wildcard-card"]',
     );
     const names = new Set<string>();
     for (let i = 0; i < containers.length; i++) {

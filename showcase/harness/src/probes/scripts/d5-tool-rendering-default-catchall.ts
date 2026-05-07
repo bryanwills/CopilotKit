@@ -11,9 +11,15 @@
  *
  * Built-in default-catchall testid contract (Phase-1E production code):
  *   - container: `[data-testid="copilot-tool-render"]`
- *   - per-call:  `[data-tool-name="<tool_name>"]` attribute
- *   - status:    a status pill child element with one of the
- *                lifecycle states (`pending` | `executing` | `complete`).
+ *   - per-call:  `[data-tool-name="<tool_name>"]` attribute on the container
+ *   - status:    a single status pill descendant element carrying
+ *                `[data-testid="copilot-tool-render-status"]`. The
+ *                lifecycle state (`inProgress` | `executing` |
+ *                `complete`) is exposed on the container's
+ *                `data-status` attribute, but the probe only asserts
+ *                the pill testid's presence — that is sufficient to
+ *                detect a regression where the renderer drops the
+ *                pill entirely.
  *
  * The probe drives `/demos/tool-rendering-default-catchall` with a
  * weather prompt (the default-catchall demo uses `get_weather` as its
@@ -45,16 +51,16 @@ export const EXPECTED_TOOL_NAME = "get_weather";
 export const CATCHALL_CONTAINER_TESTID = "copilot-tool-render";
 
 /**
- * Status-pill testid prefix exposed by the built-in renderer. The pill
- * carries one of: pending / executing / complete. We assert ANY of
- * these is present — a "no pill at all" outcome means the renderer
- * regressed.
+ * Status-pill testid exposed by the built-in renderer. There is a
+ * single pill element per tool call; its lifecycle state is encoded
+ * via the container's `data-status` attribute (see
+ * `DefaultToolCallRenderer` in
+ * `packages/react-core/src/v2/hooks/use-default-render-tool.tsx`).
+ *
+ * We assert the pill testid is present — a "no pill at all" outcome
+ * means the renderer regressed.
  */
-export const STATUS_PILL_TESTIDS = [
-  "tool-status-pending",
-  "tool-status-executing",
-  "tool-status-complete",
-] as const;
+export const STATUS_PILL_TESTID = "copilot-tool-render-status";
 
 /** Total time we'll poll for the renderer to settle, in ms. */
 const POLL_TIMEOUT_MS = 15_000;
@@ -94,11 +100,12 @@ export async function probeDefaultCatchall(
       if (name) observedToolNames.push(name);
       if (name === "get_weather") containerWithToolName = true;
     }
-    // Status pill: check any of the lifecycle testids anywhere in the doc.
-    const statusPillPresent =
-      !!win.document.querySelector('[data-testid="tool-status-pending"]') ||
-      !!win.document.querySelector('[data-testid="tool-status-executing"]') ||
-      !!win.document.querySelector('[data-testid="tool-status-complete"]');
+    // Status pill: check the single pill testid anywhere in the doc.
+    // The renderer encodes the lifecycle state on the container's
+    // `data-status` attribute, not on the testid itself.
+    const statusPillPresent = !!win.document.querySelector(
+      '[data-testid="copilot-tool-render-status"]',
+    );
     return { containerWithToolName, statusPillPresent, observedToolNames };
   });
 }
@@ -119,7 +126,7 @@ export function validateDefaultCatchall(
   if (!snap.statusPillPresent) {
     return (
       "tool-rendering-default-catchall: container present but no status pill " +
-      `(any of ${STATUS_PILL_TESTIDS.join(", ")}) — built-in renderer regressed`
+      `([data-testid="${STATUS_PILL_TESTID}"]) — built-in renderer regressed`
     );
   }
   return null;
